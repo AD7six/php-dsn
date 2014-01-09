@@ -5,6 +5,39 @@ namespace AD7six\Envy;
 class CakePHP2Env extends Env {
 
 /**
+ * parseCache
+ *
+ * @param array $defaults
+ * @return array
+ */
+	public static function parseCache($defaults = [], $replacements = []) {
+		return static::parsePrefix('CACHE_URL', $defaults, $replacements, [__CLASS__, '_parseCache']);
+	}
+
+/**
+ * parseDb
+ *
+ * @param array $defaults
+ * @param array $replacements
+ * @return array
+ */
+	public static function parseDb($defaults = [], $replacements = []) {
+		return static::parsePrefix('DATABASE_URL', $defaults, $replacements, [__CLASS__, '_parseDb']);
+	}
+
+/**
+ * parseLogs
+ *
+ * @param array $defaults
+ * @param array $replacements
+ * @return array
+ */
+	public static function parseLogs($defaults = [], $replacements = []) {
+		return static::parsePrefix('LOG_URL', $defaults, $replacements, [__CLASS__, '_parseLog'], 'debug');
+	}
+
+
+/**
  * Handler for cache configs
  *
  * @param mixed $key

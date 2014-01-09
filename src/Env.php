@@ -16,21 +16,20 @@ class Env {
 			return [];
 		}
 
-		$values = $_ENV + $_SERVER;
+		$values = static::_allEnvVars();
 		$keys = array_keys($values);
 
 		$return = [];
 		foreach($keys as $key) {
-			if (strpos($key, $prefix) !== 0) {
+			if (strpos($key, $prefix) !== 0 || substr($key, -4) !== '_URL') {
 				continue;
 			}
 
 			$val = $values[$key];
 
-			if ($key === $prefix) {
+			$key = trim(substr($key, strlen($prefix), -4), '_');
+			if (!$key) {
 				$key = $defaultKey;
-			} else {
-				$key = trim(substr($key, strlen($prefix)), '_');
 			}
 
 			$return[$key] = $val;
@@ -38,38 +37,6 @@ class Env {
 		ksort($return, SORT_STRING | SORT_FLAG_CASE);
 
 		return $return;
-	}
-
-/**
- * parseCache
- *
- * @param array $defaults
- * @return array
- */
-	public static function parseCache($defaults = [], $replacements = []) {
-		return static::parsePrefix('CACHE_URL', $defaults, $replacements, [__CLASS__, '_parseCache']);
-	}
-
-/**
- * parseDb
- *
- * @param array $defaults
- * @param array $replacements
- * @return array
- */
-	public static function parseDb($defaults = [], $replacements = []) {
-		return static::parsePrefix('DATABASE_URL', $defaults, $replacements, [__CLASS__, '_parseDb']);
-	}
-
-/**
- * parseLogs
- *
- * @param array $defaults
- * @param array $replacements
- * @return array
- */
-	public static function parseLogs($defaults = [], $replacements = []) {
-		return static::parsePrefix('LOG_URL', $defaults, $replacements, [__CLASS__, '_parseLog'], 'debug');
 	}
 
 /**
@@ -82,7 +49,7 @@ class Env {
  * @param string $prefixDefault
  * @return array
  */
-	public static function parsePrefix($prefix, $defaults, $replacements, $callback = null, $prefixDefault = 'default') {
+	public static function parsePrefix($prefix, $defaults = [], $replacements = [], $callback = null, $prefixDefault = 'default') {
 		$data = static::allByPrefix($prefix, $prefixDefault);
 		if (!$data) {
 			return false;
@@ -117,8 +84,7 @@ class Env {
  */
 	public static function parseUrl($string) {
 		$url = parse_url($string);
-		if (!$url) {
-			debug ($string);
+		if (!$url || array_keys($url) === ['path']) {
 			return false;
 		}
 
@@ -130,6 +96,15 @@ class Env {
 		}
 
 		return $url;
+	}
+
+/**
+ * _allEnvVars
+ *
+ * @return array
+ */
+	protected static function _allEnvVars() {
+		$_ENV + $_SERVER;
 	}
 
 /**

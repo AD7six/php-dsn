@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+	bootstrap="./tests/bootstrap.php"
+	>
+
+	<testsuites>
+		<testsuite name="Envy Test Cases">
+			<directory>./tests/Envy/</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
