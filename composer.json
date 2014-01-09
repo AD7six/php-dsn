@@ -1,0 +1,26 @@
+{
+	"name": "ad7six/php-envy",
+    "type": "library",
+	"description": "A utility for extracting configuration uris from environment variables",
+    "license": "MIT",
+	"authors": [
+		{
+			"name": "Andy Dawson",
+			"email": "andydawson76@gmail.com",
+            "homepage": "http://ad7six.com",
+            "role": "Maintainer"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0"
+	},
+	"suggest": {
+		"josegonzalez/dotenv": "0.1.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"AD7six\\Envy": "src",
+			"AD7six\\Envy\\Test": "tests"
+		}
+	}
+}
