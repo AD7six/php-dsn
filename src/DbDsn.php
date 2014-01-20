@@ -29,6 +29,17 @@ class DbDsn extends Dsn {
 	];
 
 /**
+ * pathIsPath
+ *
+ * The parsed url will have a path element which normally is _not_ a path; it's a database name
+ * In the case it is a path (sqlite) this property will prevent mishandling of the path as
+ * a database name
+ *
+ * @var bool
+ */
+	protected $_pathIsPath = false;
+
+/**
  * keyMap
  *
  * make sure that the path is translated too, but not if it's already redefined
@@ -52,9 +63,16 @@ class DbDsn extends Dsn {
  * @return array
  */
 	public function parseUrl($string) {
+		if ($this->_pathIsPath) {
+			$scheme = substr($string, 0, strpos($string, ':'));
+			$string = 'file' . substr($string, strlen($scheme));
+		}
+
 		$return = parent::parseUrl($string);
 
-		if (isset($this->_url['path'])) {
+		if ($this->_pathIsPath) {
+			$this->_url['scheme'] = $scheme;
+		} elseif (isset($this->_url['path'])) {
 			$this->_url['path'] = ltrim($this->_url['path'], '/');
 		}
 
@@ -70,7 +88,7 @@ class DbDsn extends Dsn {
  * @return string
  */
 	protected function _toUrl($data) {
-		if (isset($data['path'])) {
+		if (!$this->_pathIsPath && isset($data['path'])) {
 			$data['path'] = '/' . $data['path'];
 		}
 		return parent::_toUrl($data);

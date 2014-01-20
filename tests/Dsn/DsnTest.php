@@ -152,4 +152,28 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 		$this->assertSame($url, (string)$dsn, 'The regenerated dsn should be the same as the input');
 	}
 
+/**
+ * testParseSqlite
+ *
+ * @return void
+ */
+	public function testParseSqlite() {
+		$url = 'sqlite:///over/here.db';
+		$dsn = Dsn::parse($url);
+		$this->assertInstanceOf('AD7six\Dsn\SqliteDsn', $dsn);
+
+		$expected = [
+			'scheme' => 'sqlite',
+			'host' => null,
+			'port' => null,
+			'user' => null,
+			'pass' => null,
+			'database' => '/over/here.db',
+		];
+
+		$return = $dsn->toArray();
+		$this->assertSame($expected, $return, 'Default port should be in the parsed result');
+
+		$this->assertSame($url, (string)$dsn, 'The regenerated dsn should be the same as the input');
+	}
 }
