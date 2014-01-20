@@ -1,5 +1,5 @@
 {
-	"name": "ad7six/php-envy",
+	"name": "ad7six/dsn",
     "type": "library",
 	"description": "A utility for extracting configuration uris from environment variables",
     "license": "MIT",
