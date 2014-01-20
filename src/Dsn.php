@@ -2,12 +2,35 @@
 
 namespace AD7six\Dsn;
 
+/**
+ * Dsn
+ *
+ */
 class Dsn {
 
+/**
+ * parsed url as an associative array. the keys are the "native" keys
+ *
+ * @var array
+ */
 	protected $_url = [];
 
+/**
+ * The default port used in connections
+ *
+ * This is overriden in subclasses
+ *
+ * @var int
+ */
 	protected $_defaultPort;
 
+/**
+ * The mandatory keys present in a dsn
+ *
+ * When regenerating a dsn string, all other keys are converted to get arguments
+ *
+ * @var array
+ */
 	protected $_dsnKeys = [
 		'scheme' => null,
 		'host' => null,
@@ -17,8 +40,24 @@ class Dsn {
 		'path' => null
 	];
 
+/**
+ * _keyMap
+ *
+ * Internal storage of key name translations
+ *
+ * @var array
+ */
 	protected $_keyMap = [];
 
+/**
+ * parse a dsn string into a dsn instance
+ *
+ * If a specific dsn class is available an instance of that class is returned
+ *
+ * @param string $url
+ * @param array $keyMap
+ * @return mixed Dsn instance or false
+ */
 	public static function parse($url, $keyMap = []) {
 		$scheme = substr($url, 0, strpos($url, ':'));
 		if (!$scheme) {
@@ -33,14 +72,52 @@ class Dsn {
 		return new $className($url, $keyMap);
 	}
 
-	public function __construct($string = '', $keyMap = [], $defaultPort = null) {
+/**
+ * Create a new instance, parse the url if passed
+ *
+ * @param string $url
+ * @param array $keyMap
+ * @param int $defaultPort
+ * @return void
+ */
+	public function __construct($url = '', $keyMap = [], $defaultPort = null) {
 		if ($defaultPort) {
 			$this->_defaultPort = $defaultPort;
 		}
 		if ($keyMap) {
+			$this->keyMap($keyMap);
+		}
+		$this->parseUrl($url);
+	}
+
+/**
+ * Set or get the default port
+ *
+ * @param int $port
+ * @return int
+ */
+	public function defaultPort($port = null) {
+		if (!is_null($port)) {
+			$this->_defaultPort = $port;
+		}
+
+		return $this->_defaultPort;
+	}
+
+/**
+ * Set or get the key map
+ *
+ * The key map permits translating the parsed array keys
+ *
+ * @param mixed $keyMap
+ * @return array
+ */
+	public function keyMap($keyMap = null) {
+		if (!is_null($keyMap)) {
 			$this->_keyMap = $keyMap;
 		}
-		$this->parseUrl($string);
+
+		return $this->_keyMap;
 	}
 
 /**
@@ -98,6 +175,49 @@ class Dsn {
 	}
 
 /**
+ * return this instance as a dsn url string
+ *
+ * @return string
+ */
+	public function toUrl() {
+		return $this->_toUrl($this->_url);
+	}
+
+/**
+ * _toUrl
+ *
+ * @param mixed $data
+ * @return void
+ */
+	protected function _toUrl($data) {
+		$url = array_intersect_key($data, $this->_dsnKeys);
+
+		$return = $url['scheme'] . '://';
+		if (!empty($url['user'])) {
+			$return .= $url['user'];
+			if (!empty($url['pass'])) {
+				$return .= ':' . $url['pass'];
+			}
+			$return .= '@';
+		}
+		$return .= $url['host'];
+		if (!empty($url['port']) && $url['port'] != $this->_defaultPort) {
+			$return .= ':' . $url['port'];
+		}
+		$return .= $url['path'];
+
+		$query = array_diff_key($data, $this->_dsnKeys);
+		if ($query) {
+			foreach($query as $key => &$value) {
+				$value = "$key=$value";
+			}
+			$return .= '?' . implode($query, '&');
+		}
+
+		return $return;
+	}
+
+/**
  * __get
  *
  * Allow accessing any of the parsed parts of a dsn, honoring the keymap
@@ -119,47 +239,30 @@ class Dsn {
 		return null;
 	}
 
-	public function __toString() {
-		$url = array_intersect_key($this->_url, $this->_dsnKeys);
-
-		$return = $url['scheme'] . '://';
-		if (!empty($url['user'])) {
-			$return .= $url['user'];
-			if (!empty($url['pass'])) {
-				$return .= ':' . $url['pass'];
-			}
-			$return .= '@';
-		}
-		$return .= $url['host'];
-		if (!empty($url['port']) && $url['port'] != $this->_defaultPort) {
-			$return .= ':' . $url['port'];
-		}
-		$return .= $url['path'];
-
-		$query = array_diff_key($this->_url, $this->_dsnKeys);
-		if ($query) {
-			foreach($query as $key => &$value) {
-				$value = "$key=$value";
-			}
-			$return .= '?' . implode($query, '&');
+/**
+ * Allow setting any of the parsed parts of a dsn, honoring the keymap
+ *
+ * @param string $name
+ * @param mixed $value
+ * @return void
+ */
+	public function __set($name, $value) {
+		if ($key = array_search($name, $this->_keyMap)) {
+			$name = $key;
+		} elseif (isset($this->_keyMap[$name])) {
+			return;
 		}
 
-		return $return;
+		$this->_url[$name] = $value;
 	}
 
 /**
- * get a value out of an array if it exists
+ * __toString
  *
- * @param array $data
- * @param string $key
- * @return mixed
+ * @return string
  */
-	protected function _get($data, $key) {
-		if (isset($data[$key])) {
-			return $data[$key];
-		}
-
-		return null;
+	public function __toString() {
+		return $this->toUrl();
 	}
 
 /**

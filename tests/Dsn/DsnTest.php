@@ -143,7 +143,7 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 			'port' => 3306,
 			'user' => 'user',
 			'pass' => 'password',
-			'path' => '/database_name',
+			'database' => 'database_name',
 		];
 
 		$return = $dsn->toArray();
