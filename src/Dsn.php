@@ -50,15 +50,25 @@ class Dsn {
 	protected $_keyMap = [];
 
 /**
+ * _replacements
+ *
+ * array of strings which are replaced in parsed dsns
+ *
+ * @var array
+ */
+	protected $_replacements = [];
+
+/**
  * parse a dsn string into a dsn instance
  *
  * If a specific dsn class is available an instance of that class is returned
  *
  * @param string $url
  * @param array $keyMap
+ * @param array $replacements
  * @return mixed Dsn instance or false
  */
-	public static function parse($url, $keyMap = []) {
+	public static function parse($url, $keyMap = [], $replacements = []) {
 		$scheme = substr($url, 0, strpos($url, ':'));
 		if (!$scheme) {
 			return false;
@@ -69,7 +79,7 @@ class Dsn {
 			$className  = __CLASS__;
 		}
 
-		return new $className($url, $keyMap);
+		return new $className($url, $keyMap, $replacements);
 	}
 
 /**
@@ -77,16 +87,17 @@ class Dsn {
  *
  * @param string $url
  * @param array $keyMap
- * @param int $defaultPort
+ * @param array $replacements
  * @return void
  */
-	public function __construct($url = '', $keyMap = [], $defaultPort = null) {
-		if ($defaultPort) {
-			$this->_defaultPort = $defaultPort;
-		}
+	public function __construct($url = '', $keyMap = [], $replacements = []) {
 		if ($keyMap) {
 			$this->keyMap($keyMap);
 		}
+		if ($replacements) {
+			$this->replacements($replacements);
+		}
+
 		$this->parseUrl($url);
 	}
 
@@ -121,6 +132,20 @@ class Dsn {
 	}
 
 /**
+ * Set or get replacements
+ *
+ * @param mixed $keyMap
+ * @return array
+ */
+	public function replacements($replacements = null) {
+		if (!is_null($replacements)) {
+			$this->_replacements = $replacements;
+		}
+
+		return $this->_replacements;
+	}
+
+/**
  * parseUrl
  *
  * Parse a url and merge with any extra get arguments defined
@@ -148,6 +173,7 @@ class Dsn {
 		}
 
 		$url = array_merge($this->_dsnKeys, $url);
+		$url = $this->_replace($url, $this->_replacements);
 
 		$this->_url = $url;
 	}
