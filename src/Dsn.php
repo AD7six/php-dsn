@@ -5,84 +5,14 @@ namespace AD7six\Dsn;
 class Dsn {
 
 /**
- * allByPrefix
- *
- * @param string $prefix
- * @param string $defaultKey
- * @return array
- */
-	public static function allbyPrefix($prefix, $defaultKey = 'default') {
-		if (!$prefix) {
-			return [];
-		}
-
-		$values = static::_allDsnVars();
-		$keys = array_keys($values);
-
-		$return = [];
-		foreach($keys as $key) {
-			if (strpos($key, $prefix) !== 0 || substr($key, -4) !== '_URL') {
-				continue;
-			}
-
-			$val = $values[$key];
-
-			$key = trim(substr($key, strlen($prefix), -4), '_');
-			if (!$key) {
-				$key = $defaultKey;
-			}
-
-			$return[$key] = $val;
-		}
-		ksort($return, SORT_STRING | SORT_FLAG_CASE);
-
-		return $return;
-	}
-
-/**
- * parsePrefix
- *
- * @param string $prefix
- * @param array $defaults
- * @param array $replacements
- * @param callable $callback
- * @param string $prefixDefault
- * @return array
- */
-	public static function parsePrefix($prefix, $defaults = [], $replacements = [], $callback = null, $prefixDefault = 'default') {
-		$data = static::allByPrefix($prefix, $prefixDefault);
-		if (!$data) {
-			return false;
-		}
-
-		if (!$callback) {
-			$callback = [__CLASS__, '_parse'];
-		}
-
-		$return = [];
-
-		foreach($data as $key => $url) {
-			$config = static::parseUrl($url);
-			if (!$config) {
-				continue;
-			}
-
-			$key = strtolower($key);
-			$return += $callback($key, $config, $defaults);
-		}
-
-		return static::_replace($return, $replacements);
-	}
-
-/**
- * parseUrl
+ * parse
  *
  * Parse a url and merge with any extra get arguments defined
  *
  * @param string $string
  * @return array
  */
-	public static function parseUrl($string) {
+	public static function parse($string) {
 		$url = parse_url($string);
 		if (!$url || array_keys($url) === ['path']) {
 			return false;
@@ -96,15 +26,6 @@ class Dsn {
 		}
 
 		return $url;
-	}
-
-/**
- * _allDsnVars
- *
- * @return array
- */
-	protected static function _allDsnVars() {
-		$_ENV + $_SERVER;
 	}
 
 /**
