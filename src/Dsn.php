@@ -4,9 +4,13 @@ namespace AD7six\Dsn;
 
 class Dsn {
 
-	protected $_data = [];
+	protected $_url = [];
 
-	public function __construct($string = '') {
+	protected $_defaultPort;
+
+	public function __construct($string = '', $keyMap = [], $defaultPort = null) {
+		$this->_defaultPort = $defaultPort;
+		$this->_keyMap = $keyMap;
 		$this->parseUrl($string);
 	}
 
@@ -19,11 +23,15 @@ class Dsn {
  * @return void
  */
 	public function parseUrl($string) {
-		$this->_data = [];
+		$this->_url = [];
 
 		$url = parse_url($string);
 		if (!$url || array_keys($url) === ['path']) {
 			return false;
+		}
+
+		if ($this->_defaultPort && empty($url['port'])) {
+			$url['port'] = $this->_defaultPort;
 		}
 
 		if (isset($url['query'])) {
@@ -33,16 +41,26 @@ class Dsn {
 			$url += $extra;
 		}
 
-		$this->_data = $url;
+		$this->_url = $url;
 	}
 
 	public function toArray() {
-		return $this->_data;
+		$return = $this->_url;
+
+		foreach($this->_keyMap as $old => $new) {
+			$return[$new] = $return[$old];
+			unset($return[$old]);
+		}
+		return $this->_url;
 	}
 
 	public function __get($name) {
-		if (array_key_exists($name, $this->_data)) {
-			return $this->_data[$name];
+		if ($key = array_search($this->_keyMap, $name)) {
+			$name = $key;
+		}
+
+		if (array_key_exists($name, $this->_url)) {
+			return $this->_url[$name];
 		}
 
 		return null;
@@ -58,7 +76,7 @@ class Dsn {
 			'path' => ''
 		];
 
-		$url = array_intersect_key($this->_data, $urlKeys);
+		$url = array_intersect_key($this->_url, $urlKeys);
 
 		$return = $url['scheme'] . '://';
 		if (!empty($url['user'])) {
@@ -74,7 +92,7 @@ class Dsn {
 		}
 		$return .= $url['path'];
 
-		$query = array_diff_key($this->_data, $urlKeys);
+		$query = array_diff_key($this->_url, $urlKeys);
 		if ($query) {
 			foreach($query as $key => &$value) {
 				$value = "$key=$value";

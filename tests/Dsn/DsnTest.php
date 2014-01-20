@@ -14,46 +14,50 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 /**
  * testParseUrl
  *
+ * @dataProvider parseUrlProvider
  * @return void
  */
-	public function testParseUrl() {
-		$dsn = new Dsn('');
-
-		$expected = [
-			'scheme' => 'service',
-			'host' => 'host',
-			'path' => '/path'
-		];
-		$dsn->parseUrl('service://host/path');
+	public function testParseUrl($url, $expected) {
+		$dsn = new Dsn($url);
 		$return = $dsn->toArray();
+		$this->assertSame($expected, $return, 'The url should parse as expected');
+	}
 
-		$this->assertSame($expected, $return, 'a basic url should be parsed');
-
-		$expected = [
-			'scheme' => 'mysql',
-			'host' => 'localhost',
-			'port' => 3306,
-			'user' => 'user',
-			'pass' => 'password',
-			'path' => '/database_name',
+	public function parseUrlProvider() {
+		return [
+			[
+				'service://host/path',
+				[
+					'scheme' => 'service',
+					'host' => 'host',
+					'path' => '/path'
+				]
+			],
+			[
+				'mysql://user:password@localhost:3306/database_name',
+				[
+					'scheme' => 'mysql',
+					'host' => 'localhost',
+					'port' => 3306,
+					'user' => 'user',
+					'pass' => 'password',
+					'path' => '/database_name',
+				]
+			],
+			[
+				'mysql://user:password@localhost:3306/database_name?encoding=utf8&flags=0',
+				[
+					'scheme' => 'mysql',
+					'host' => 'localhost',
+					'port' => 3306,
+					'user' => 'user',
+					'pass' => 'password',
+					'path' => '/database_name',
+					'encoding' => 'utf8',
+					'flags' => '0',
+				]
+			]
 		];
-		$dsn->parseUrl('mysql://user:password@localhost:3306/database_name');
-		$return = $dsn->toArray();
-		$this->assertSame($expected, $return, 'A url should be parsed into it\'s component parts');
-
-		$expected = [
-			'scheme' => 'mysql',
-			'host' => 'localhost',
-			'port' => 3306,
-			'user' => 'user',
-			'pass' => 'password',
-			'path' => '/database_name',
-			'encoding' => 'utf8',
-			'flags' => '0',
-		];
-		$dsn->parseUrl('mysql://user:password@localhost:3306/database_name?encoding=utf8&flags=0');
-		$return = $dsn->toArray();
-		$this->assertSame($expected, $return, 'Option (get arguments) should be merged with the parsed url');
 	}
 
 /**
