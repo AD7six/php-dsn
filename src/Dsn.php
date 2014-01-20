@@ -44,19 +44,41 @@ class Dsn {
 		$this->_url = $url;
 	}
 
+/**
+ * toArray
+ *
+ * Honor the key map, keeping the original key order (don't reorder keys whilst
+ * translating them
+ *
+ * @return array
+ */
 	public function toArray() {
-		$return = $this->_url;
+		$url = $this->_url;
 
-		foreach($this->_keyMap as $old => $new) {
-			$return[$new] = $return[$old];
-			unset($return[$old]);
+		$return = [];
+		foreach($url as $key => $val) {
+			if (isset($this->_keyMap[$key])) {
+				$key = $this->_keyMap[$key];
+			}
+			$return[$key] = $val;
 		}
-		return $this->_url;
+
+		return $return;
 	}
 
+/**
+ * __get
+ *
+ * Allow accessing any of the parsed parts of a dsn, honoring the keymap
+ *
+ * @param mixed $name
+ * @return void
+ */
 	public function __get($name) {
-		if ($key = array_search($this->_keyMap, $name)) {
+		if ($key = array_search($name, $this->_keyMap)) {
 			$name = $key;
+		} elseif (isset($this->_keyMap[$name])) {
+			return null;
 		}
 
 		if (array_key_exists($name, $this->_url)) {
