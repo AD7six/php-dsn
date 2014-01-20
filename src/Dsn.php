@@ -8,6 +8,15 @@ class Dsn {
 
 	protected $_defaultPort;
 
+	protected $_dsnKeys = [
+		'scheme' => null,
+		'host' => null,
+		'port' => null,
+		'user' => null,
+		'pass' => null,
+		'path' => null
+	];
+
 	public function __construct($string = '', $keyMap = [], $defaultPort = null) {
 		$this->_defaultPort = $defaultPort;
 		$this->_keyMap = $keyMap;
@@ -40,6 +49,8 @@ class Dsn {
 			unset($url['query']);
 			$url += $extra;
 		}
+
+		$url = array_merge($this->_dsnKeys, $url);
 
 		$this->_url = $url;
 	}
@@ -89,16 +100,7 @@ class Dsn {
 	}
 
 	public function __toString() {
-		$urlKeys = [
-			'scheme' => '',
-			'host' => '',
-			'port' => '',
-			'user' => '',
-			'pass' => '',
-			'path' => ''
-		];
-
-		$url = array_intersect_key($this->_url, $urlKeys);
+		$url = array_intersect_key($this->_url, $this->_dsnKeys);
 
 		$return = $url['scheme'] . '://';
 		if (!empty($url['user'])) {
@@ -114,7 +116,7 @@ class Dsn {
 		}
 		$return .= $url['path'];
 
-		$query = array_diff_key($this->_url, $urlKeys);
+		$query = array_diff_key($this->_url, $this->_dsnKeys);
 		if ($query) {
 			foreach($query as $key => &$value) {
 				$value = "$key=$value";

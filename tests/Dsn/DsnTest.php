@@ -30,6 +30,9 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 				[
 					'scheme' => 'service',
 					'host' => 'host',
+					'port' => null,
+					'user' => null,
+					'pass' => null,
 					'path' => '/path'
 				]
 			],
@@ -78,6 +81,23 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertSame('password', $dsn->password, 'The translated key should be accessible');
 		$this->assertNull($dsn->pass, 'The original key should act like it does not exist');
+	}
+
+	public function testDefaultPorts() {
+		$url = 'mysql://user:password@localhost/database_name';
+		$dsn = new Dsn($url, [], 3306);
+
+		$expected = [
+			'scheme' => 'mysql',
+			'host' => 'localhost',
+			'port' => 3306,
+			'user' => 'user',
+			'pass' => 'password',
+			'path' => '/database_name',
+		];
+
+		$return = $dsn->toArray();
+		$this->assertSame($expected, $return, 'Default port should be in the parsed result');
 	}
 
 /**
