@@ -1,8 +1,8 @@
 <?php
 
-namespace AD7six\Envy;
+namespace AD7six\Dsn;
 
-class CakePHP2Env extends Env {
+class CakePHP2Dsn extends Dsn {
 
 /**
  * parseCache

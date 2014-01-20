@@ -5,8 +5,8 @@
 	>
 
 	<testsuites>
-		<testsuite name="Envy Test Cases">
-			<directory>./tests/Envy/</directory>
+		<testsuite name="Dsn Test Cases">
+			<directory>./tests/Dsn/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

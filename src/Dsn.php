@@ -1,8 +1,8 @@
 <?php
 
-namespace AD7six\Envy;
+namespace AD7six\Dsn;
 
-class Env {
+class Dsn {
 
 /**
  * allByPrefix
@@ -16,7 +16,7 @@ class Env {
 			return [];
 		}
 
-		$values = static::_allEnvVars();
+		$values = static::_allDsnVars();
 		$keys = array_keys($values);
 
 		$return = [];
@@ -99,11 +99,11 @@ class Env {
 	}
 
 /**
- * _allEnvVars
+ * _allDsnVars
  *
  * @return array
  */
-	protected static function _allEnvVars() {
+	protected static function _allDsnVars() {
 		$_ENV + $_SERVER;
 	}
 

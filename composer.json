@@ -1,14 +1,14 @@
 {
 	"name": "ad7six/dsn",
-    "type": "library",
-	"description": "A utility for extracting configuration uris from environment variables",
-    "license": "MIT",
+	"type": "library",
+	"description": "A utility for parsing and generating service DSNs",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Andy Dawson",
 			"email": "andydawson76@gmail.com",
-            "homepage": "http://ad7six.com",
-            "role": "Maintainer"
+			"homepage": "http://ad7six.com",
+			"role": "Maintainer"
 		}
 	],
 	"require": {
@@ -19,8 +19,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"AD7six\\Envy\\": "src",
-			"AD7six\\Envy\\Test\\": "tests"
+			"AD7six\\Dsn\\": "src",
+			"AD7six\\Dsn\\Test\\": "tests"
 		}
 	}
 }

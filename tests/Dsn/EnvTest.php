@@ -1,15 +1,15 @@
 <?php
 
-namespace AD7six\Envy\TestCase;
+namespace AD7six\Dsn\TestCase;
 
-use \AD7six\Envy\Env;
+use \AD7six\Dsn\Dsn;
 use \PHPUnit_Framework_TestCase;
 
 /**
- * EnvTest
+ * DsnTest
  *
  */
-class EnvTest extends PHPUnit_Framework_TestCase {
+class DsnTest extends PHPUnit_Framework_TestCase {
 
 /**
  * testParseUrl
@@ -22,7 +22,7 @@ class EnvTest extends PHPUnit_Framework_TestCase {
 			'host' => 'host',
 			'path' => '/path'
 		];
-		$return = Env::parseUrl('service://host/path');
+		$return = Dsn::parseUrl('service://host/path');
 		$this->assertSame($expected, $return, 'a basic url should be parsed');
 
 		$expected = [
@@ -33,7 +33,7 @@ class EnvTest extends PHPUnit_Framework_TestCase {
 			'pass' => 'password',
 			'path' => '/database_name',
 		];
-		$return = Env::parseUrl('mysql://user:password@localhost:3306/database_name');
+		$return = Dsn::parseUrl('mysql://user:password@localhost:3306/database_name');
 		$this->assertSame($expected, $return, 'A url should be parsed into it\'s component parts');
 
 		$expected = [
@@ -46,12 +46,12 @@ class EnvTest extends PHPUnit_Framework_TestCase {
 			'encoding' => 'utf8',
 			'flags' => '0',
 		];
-		$return = Env::parseUrl('mysql://user:password@localhost:3306/database_name?encoding=utf8&flags=0');
+		$return = Dsn::parseUrl('mysql://user:password@localhost:3306/database_name?encoding=utf8&flags=0');
 		$this->assertSame($expected, $return, 'Option (get arguments) should be merged with the parsed url');
 	}
 
 	public function testAllByPrefix() {
-		$dummyEnv = [
+		$dummyDsn = [
 			'FOO' => 'ignored',
 			'FOO_URL' => 'service://host/path',
 			'FOO_BAR_URL' => 'service://host/path',
@@ -59,10 +59,10 @@ class EnvTest extends PHPUnit_Framework_TestCase {
 			'FOO_BAR_URL_MORE' => 'ignored',
 		];
 
-		$class = $this->getMockClass('\AD7six\Envy\Env', ['_allEnvVars']);
+		$class = $this->getMockClass('\AD7six\Dsn\Dsn', ['_allDsnVars']);
 		$class::staticExpects($this->once())
-			->method('_allEnvVars')
-			->will($this->returnValue($dummyEnv));
+			->method('_allDsnVars')
+			->will($this->returnValue($dummyDsn));
 
 		$expected = [
 			'BAR' => 'service://host/path',
@@ -73,7 +73,7 @@ class EnvTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testParsePrefix() {
-		$dummyEnv = [
+		$dummyDsn = [
 			'FOO' => 'ignored',
 			'FOO_URL' => 'service://host/path',
 			'FOO_BAR_URL' => 'service://host/path',
@@ -81,10 +81,10 @@ class EnvTest extends PHPUnit_Framework_TestCase {
 			'FOO_BAR_URL_MORE' => 'ignored',
 		];
 
-		$class = $this->getMockClass('\AD7six\Envy\Env', ['_allEnvVars']);
+		$class = $this->getMockClass('\AD7six\Dsn\Dsn', ['_allDsnVars']);
 		$class::staticExpects($this->once())
-			->method('_allEnvVars')
-			->will($this->returnValue($dummyEnv));
+			->method('_allDsnVars')
+			->will($this->returnValue($dummyDsn));
 
 		$expected = [
 			'bar' => [

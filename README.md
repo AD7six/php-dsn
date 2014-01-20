@@ -1,6 +1,6 @@
-# Envy
+# PHP DSN
 
-A utility for extracting configuration uris from environment variables
+A utility for parsing and generating service DSNs
 
 ## References
 
