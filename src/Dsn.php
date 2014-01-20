@@ -17,9 +17,29 @@ class Dsn {
 		'path' => null
 	];
 
+	protected $_keyMap = [];
+
+	public static function parse($url, $keyMap = []) {
+		$scheme = substr($url, 0, strpos($url, ':'));
+		if (!$scheme) {
+			return false;
+		}
+
+		$className  = __NAMESPACE__ . '\\' . ucfirst($scheme) . 'Dsn';
+		if (!class_exists($className)) {
+			$className  = __CLASS__;
+		}
+
+		return new $className($url, $keyMap);
+	}
+
 	public function __construct($string = '', $keyMap = [], $defaultPort = null) {
-		$this->_defaultPort = $defaultPort;
-		$this->_keyMap = $keyMap;
+		if ($defaultPort) {
+			$this->_defaultPort = $defaultPort;
+		}
+		if ($keyMap) {
+			$this->_keyMap = $keyMap;
+		}
 		$this->parseUrl($string);
 	}
 

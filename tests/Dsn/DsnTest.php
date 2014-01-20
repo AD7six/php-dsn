@@ -127,4 +127,29 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 		];
 	}
 
+	public function testParseNoClass() {
+		$dsn = Dsn::parse('service://host/path');
+		$this->assertInstanceOf('AD7six\Dsn\Dsn', $dsn);
+	}
+
+	public function testParseMysql() {
+		$url = 'mysql://user:password@localhost/database_name';
+		$dsn = Dsn::parse($url);
+		$this->assertInstanceOf('AD7six\Dsn\MysqlDsn', $dsn);
+
+		$expected = [
+			'scheme' => 'mysql',
+			'host' => 'localhost',
+			'port' => 3306,
+			'user' => 'user',
+			'pass' => 'password',
+			'path' => '/database_name',
+		];
+
+		$return = $dsn->toArray();
+		$this->assertSame($expected, $return, 'Default port should be in the parsed result');
+
+		$this->assertSame($url, (string)$dsn, 'The regenerated dsn should be the same as the input');
+	}
+
 }
