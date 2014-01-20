@@ -111,7 +111,7 @@ class Dsn {
 			$return .= '@';
 		}
 		$return .= $url['host'];
-		if (!empty($url['port'])) {
+		if (!empty($url['port']) && $url['port'] != $this->_defaultPort) {
 			$return .= ':' . $url['port'];
 		}
 		$return .= $url['path'];

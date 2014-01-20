@@ -98,6 +98,8 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 
 		$return = $dsn->toArray();
 		$this->assertSame($expected, $return, 'Default port should be in the parsed result');
+
+		$this->assertSame($url, (string) $dsn, 'The regenerated url should be identical to the input');
 	}
 
 /**
