@@ -12,17 +12,17 @@ use \PHPUnit_Framework_TestCase;
 class DsnTest extends PHPUnit_Framework_TestCase {
 
 /**
- * testParse
+ * testParseUrl
  *
  * @return void
  */
-	public function testParse() {
+	public function testParseUrl() {
 		$expected = [
 			'scheme' => 'service',
 			'host' => 'host',
 			'path' => '/path'
 		];
-		$return = Dsn::parse('service://host/path');
+		$return = Dsn::parseUrl('service://host/path');
 		$this->assertSame($expected, $return, 'a basic url should be parsed');
 
 		$expected = [
@@ -33,7 +33,7 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 			'pass' => 'password',
 			'path' => '/database_name',
 		];
-		$return = Dsn::parse('mysql://user:password@localhost:3306/database_name');
+		$return = Dsn::parseUrl('mysql://user:password@localhost:3306/database_name');
 		$this->assertSame($expected, $return, 'A url should be parsed into it\'s component parts');
 
 		$expected = [
@@ -46,7 +46,7 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 			'encoding' => 'utf8',
 			'flags' => '0',
 		];
-		$return = Dsn::parse('mysql://user:password@localhost:3306/database_name?encoding=utf8&flags=0');
+		$return = Dsn::parseUrl('mysql://user:password@localhost:3306/database_name?encoding=utf8&flags=0');
 		$this->assertSame($expected, $return, 'Option (get arguments) should be merged with the parsed url');
 	}
 

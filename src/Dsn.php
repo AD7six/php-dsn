@@ -5,14 +5,14 @@ namespace AD7six\Dsn;
 class Dsn {
 
 /**
- * parse
+ * parseUrl
  *
  * Parse a url and merge with any extra get arguments defined
  *
  * @param string $string
  * @return array
  */
-	public static function parse($string) {
+	public static function parseUrl($string) {
 		$url = parse_url($string);
 		if (!$url || array_keys($url) === ['path']) {
 			return false;
@@ -41,22 +41,6 @@ class Dsn {
 		}
 
 		return null;
-	}
-
-/**
- * Generic/noop handler
- *
- * @param mixed $key
- * @param mixed $config
- * @param mixed $defaults
- * @return array
- */
-	protected static function _parse($key, $config, $defaults) {
-		$name = isset($config['name']) ? $config['name'] : trim($key, '_');
-
-		$config += $defaults;
-
-		return [$name => $config];
 	}
 
 /**
