@@ -19,18 +19,6 @@ class DbDsn extends Dsn {
 	protected $_databaseIsFile = false;
 
 /**
- * _keyMap
- *
- * The path is the database name
- *
- * @var array
- */
-	protected $_keyMap = [
-		'scheme' => 'engine',
-		'path' => 'database'
-	];
-
-/**
  * getEngine
  *
  * @return string

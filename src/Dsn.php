@@ -41,15 +41,6 @@ class Dsn {
 	];
 
 /**
- * _keyMap
- *
- * Internal storage of key name translations
- *
- * @var array
- */
-	protected $_keyMap = [];
-
-/**
  * parse a dsn string into a dsn instance
  *
  * If a more specific dsn class is available an instance of that class is returned
@@ -101,22 +92,6 @@ class Dsn {
 	}
 
 /**
- * Set or get the key map
- *
- * The key map permits translating the parsed array keys
- *
- * @param mixed $keyMap
- * @return array
- */
-	public function keyMap($keyMap = null) {
-		if (!is_null($keyMap)) {
-			$this->_keyMap = $keyMap;
-		}
-
-		return $this->_keyMap;
-	}
-
-/**
  * parseUrl
  *
  * Parse a url and merge with any extra get arguments defined
@@ -135,6 +110,14 @@ class Dsn {
 		$this->_parseUrl($url);
 	}
 
+/**
+ * Worker function for parseUrl
+ *
+ * Take the passed array, and using getters update the instance
+ *
+ * @param array $url
+ * @return void
+ */
 	protected function _parseUrl($url) {
 		$defaultPort = $this->defaultPort();
 		if ($defaultPort && empty($url['port'])) {
@@ -167,10 +150,6 @@ class Dsn {
 
 		$return = [];
 		foreach(array_keys($url) as $key) {
-			if (isset($this->_keyMap[$key])) {
-				$key = $this->_keyMap[$key];
-			}
-
 			$val = $this->$key;
 
 			if ($val !== null) {
@@ -252,15 +231,6 @@ class Dsn {
  */
 	public function __get($key) {
 		$getter = 'get' . ucfirst($key);
-		if (method_exists($this, $getter)) {
-			return $this->$getter();
-		}
-
-		if ($aliased = array_search($key, $this->_keyMap)) {
-			$key = $aliased;
-			$getter = 'get' . ucfirst($key);
-		}
-
 		return $this->$getter();
 	}
 
