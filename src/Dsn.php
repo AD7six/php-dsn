@@ -9,7 +9,7 @@ namespace AD7six\Dsn;
 class Dsn {
 
 /**
- * parsed url as an associative array. the keys are the "native" keys
+ * parsed url as an associative array
  *
  * @var array
  */
@@ -41,108 +41,54 @@ class Dsn {
 	];
 
 /**
- * _keyMap
- *
- * Internal storage of key name translations
- *
- * @var array
- */
-	protected $_keyMap = [];
-
-/**
- * _replacements
- *
- * array of strings which are replaced in parsed dsns
- *
- * @var array
- */
-	protected $_replacements = [];
-
-/**
  * parse a dsn string into a dsn instance
  *
- * If a specific dsn class is available an instance of that class is returned
+ * If a more specific dsn class is available an instance of that class is returned
  *
  * @param string $url
- * @param array $keyMap
- * @param array $replacements
  * @return mixed Dsn instance or false
  */
-	public static function parse($url, $keyMap = [], $replacements = []) {
+	public static function parse($url) {
 		$scheme = substr($url, 0, strpos($url, ':'));
 		if (!$scheme) {
 			return false;
 		}
 
-		$className  = __NAMESPACE__ . '\\' . ucfirst($scheme) . 'Dsn';
+		$className  = static::_namespace() . '\\' . ucfirst($scheme) . 'Dsn';
 		if (!class_exists($className)) {
-			$className  = __CLASS__;
+			$className  = static::_class();
 		}
 
-		return new $className($url, $keyMap, $replacements);
+		return new $className($url);
 	}
 
 /**
  * Create a new instance, parse the url if passed
  *
  * @param string $url
- * @param array $keyMap
- * @param array $replacements
  * @return void
  */
-	public function __construct($url = '', $keyMap = [], $replacements = []) {
-		if ($keyMap) {
-			$this->keyMap($keyMap);
+	public function __construct($url = '') {
+		if ($url) {
+			$this->parseUrl($url);
 		}
-		if ($replacements) {
-			$this->replacements($replacements);
-		}
-
-		$this->parseUrl($url);
 	}
 
 /**
- * Set or get the default port
+ * Get or set the default port
  *
  * @param int $port
  * @return int
  */
 	public function defaultPort($port = null) {
 		if (!is_null($port)) {
-			$this->_defaultPort = $port;
+			$this->_defaultPort = (int)$port;
+			if ($this->_url['port'] === null) {
+				$this->_url['port'] = $this->_defaultPort;
+			}
 		}
 
 		return $this->_defaultPort;
-	}
-
-/**
- * Set or get the key map
- *
- * The key map permits translating the parsed array keys
- *
- * @param mixed $keyMap
- * @return array
- */
-	public function keyMap($keyMap = null) {
-		if (!is_null($keyMap)) {
-			$this->_keyMap = $keyMap;
-		}
-
-		return $this->_keyMap;
-	}
-
-/**
- * Set or get replacements
- *
- * @param mixed $keyMap
- * @return array
- */
-	public function replacements($replacements = null) {
-		if (!is_null($replacements)) {
-			$this->_replacements = $replacements;
-		}
-
-		return $this->_replacements;
 	}
 
 /**
@@ -161,8 +107,9 @@ class Dsn {
 			return false;
 		}
 
-		if ($this->_defaultPort && empty($url['port'])) {
-			$url['port'] = $this->_defaultPort;
+		$defaultPort = $this->defaultPort();
+		if ($defaultPort && empty($url['port'])) {
+			$url['port'] = $defaultPort;
 		}
 
 		if (isset($url['query'])) {
@@ -173,7 +120,6 @@ class Dsn {
 		}
 
 		$url = array_merge($this->_dsnKeys, $url);
-		$url = $this->_replace($url, $this->_replacements);
 
 		$this->_url = $url;
 	}
@@ -181,8 +127,7 @@ class Dsn {
 /**
  * toArray
  *
- * Honor the key map, keeping the original key order (don't reorder keys whilst
- * translating them
+ * Return this instance as an associative array using getter methods if they exist
  *
  * @return array
  */
@@ -190,11 +135,11 @@ class Dsn {
 		$url = $this->_url;
 
 		$return = [];
-		foreach($url as $key => $val) {
-			if (isset($this->_keyMap[$key])) {
-				$key = $this->_keyMap[$key];
+		foreach(array_keys($url) as $key) {
+			$val = $this->$key;
+			if ($val !== null) {
+				$return[$key] = $val;
 			}
-			$return[$key] = $val;
 		}
 
 		return $return;
@@ -210,10 +155,28 @@ class Dsn {
 	}
 
 /**
- * _toUrl
+ * LSB wrapper
  *
- * @param mixed $data
- * @return void
+ * @return string
+ */
+	protected static function _class() {
+		return __CLASS__;
+	}
+
+/**
+ * LSB wrapper
+ *
+ * @return string
+ */
+	protected static function _namespace() {
+		return __NAMESPACE__;
+	}
+
+/**
+ * Worker function for toUrl - does not rely on instance state
+ *
+ * @param array $data
+ * @return string
  */
 	protected function _toUrl($data) {
 		$url = array_intersect_key($data, $this->_dsnKeys);
@@ -227,7 +190,9 @@ class Dsn {
 			$return .= '@';
 		}
 		$return .= $url['host'];
-		if (!empty($url['port']) && $url['port'] != $this->_defaultPort) {
+
+		$defaultPort = $this->defaultPort();
+		if (!empty($url['port']) && $url['port'] != $defaultPort) {
 			$return .= ':' . $url['port'];
 		}
 		$return .= $url['path'];
@@ -244,42 +209,26 @@ class Dsn {
 	}
 
 /**
- * __get
+ * Allow accessing any of the parsed parts of a dsn
  *
- * Allow accessing any of the parsed parts of a dsn, honoring the keymap
- *
- * @param mixed $name
- * @return void
+ * @param mixed $key
+ * @return mixed
  */
-	public function __get($name) {
-		if ($key = array_search($name, $this->_keyMap)) {
-			$name = $key;
-		} elseif (isset($this->_keyMap[$name])) {
-			return null;
-		}
-
-		if (array_key_exists($name, $this->_url)) {
-			return $this->_url[$name];
-		}
-
-		return null;
+	public function __get($key) {
+		$getter = 'get' . ucfirst($key);
+		return $this->$getter();
 	}
 
 /**
- * Allow setting any of the parsed parts of a dsn, honoring the keymap
+ * Allow setting any of the parsed parts of a dsn
  *
- * @param string $name
- * @param mixed $value
+ * @param string $key
+ * @param string $value
  * @return void
  */
-	public function __set($name, $value) {
-		if ($key = array_search($name, $this->_keyMap)) {
-			$name = $key;
-		} elseif (isset($this->_keyMap[$name])) {
-			return;
-		}
-
-		$this->_url[$name] = $value;
+	public function __set($key, $value) {
+		$setter = 'set' . ucfirst($key);
+		return $this->$setter($value);
 	}
 
 /**
@@ -292,25 +241,28 @@ class Dsn {
 	}
 
 /**
- * Recursively perform string replacements on array values
+ * Handle dynamic getters and setters
  *
- * @param array $data
- * @param array $replacements
- * @return array
+ * @param string $method
+ * @param array $args
+ * @return void
  */
-	protected function _replace($data, $replacements) {
-		if (!$replacements) {
-			return $data;
-		}
+	public function __call($method, $args) {
+		$getSet = substr($method, 0, 3);
+		if ($getSet === 'get' || $getSet === 'set') {
+			$key = lcfirst(substr($method, 3));
 
-		foreach($data as &$value) {
-			$value = str_replace(array_keys($replacements), array_values($replacements), $value);
-			if (is_array($value)) {
-				$value = $this->_replace($value, $replacements);
+			if ($getSet === 'get') {
+				if (array_key_exists($key, $this->_url)) {
+					return $this->_url[$key];
+				}
+				return null;
 			}
+
+			$this->_url[$key] = $args[0];
+			return;
 		}
 
-		return $data;
+		throw new \BadMethodCallException(sprintf('Method %s not implemented', $method));
 	}
-
 }

@@ -9,9 +9,9 @@ namespace AD7six\Dsn;
 class SqliteDsn extends DbDsn {
 
 /**
- * The path in a sqlite dsn is a path, not a database name
+ * The database in an sqlite dsn is a file
  *
  * @var bool
  */
-	protected $_pathIsPath = true;
+	protected $_databaseIsFile = true;
 }

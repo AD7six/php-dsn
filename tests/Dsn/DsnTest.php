@@ -5,6 +5,23 @@ namespace AD7six\Dsn\TestCase;
 use \AD7six\Dsn\Dsn;
 use \PHPUnit_Framework_TestCase;
 
+class TestDsn extends Dsn {
+
+	public function getSpecial() {
+		static $fakeReturn;
+
+		if (!$fakeReturn) {
+			$fakeReturn = true;
+			return 'getter value';
+		}
+		return $this->_url['special'];
+	}
+
+	public function setSpecial($val) {
+		$this->_url['special'] = strrev($val);
+	}
+}
+
 /**
  * DsnTest
  *
@@ -23,6 +40,13 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 		$this->assertSame($expected, $return, 'The url should parse as expected');
 	}
 
+/**
+ * parseUrlProvider
+ *
+ * Returns an array of [string, expectedArray]
+ *
+ * @return void
+ */
 	public function parseUrlProvider() {
 		return [
 			[
@@ -30,9 +54,6 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 				[
 					'scheme' => 'service',
 					'host' => 'host',
-					'port' => null,
-					'user' => null,
-					'pass' => null,
 					'path' => '/path'
 				]
 			],
@@ -63,43 +84,52 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 		];
 	}
 
-	public function testKeyMaps() {
+	public function testGettersAndSetters() {
 		$url = 'mysql://user:password@localhost:3306/database_name';
-		$dsn = new Dsn($url, ['user' => 'username', 'pass' => 'password']);
+		$dsn = new TestDsn($url);
 
-		$expected = [
-			'scheme' => 'mysql',
-			'host' => 'localhost',
-			'port' => 3306,
-			'username' => 'user',
-			'password' => 'password',
-			'path' => '/database_name',
-		];
-
+		$dsn->host = 'somewhereelse';
 		$return = $dsn->toArray();
-		$this->assertSame($expected, $return, 'Translated keys should be used in the output');
-
-		$this->assertSame('password', $dsn->password, 'The translated key should be accessible');
-		$this->assertNull($dsn->pass, 'The original key should act like it does not exist');
-	}
-
-	public function testDefaultPorts() {
-		$url = 'mysql://user:password@localhost/database_name';
-		$dsn = new Dsn($url, [], 3306);
-
 		$expected = [
 			'scheme' => 'mysql',
-			'host' => 'localhost',
+			'host' => 'somewhereelse',
 			'port' => 3306,
 			'user' => 'user',
 			'pass' => 'password',
 			'path' => '/database_name',
 		];
+		$this->assertSame($expected, $return, 'changed values should take effect in toArray');
+
+		$dsn->special = 'tarzan';
+		$return = $dsn->toArray();
+		$expected = [
+			'scheme' => 'mysql',
+			'host' => 'somewhereelse',
+			'port' => 3306,
+			'user' => 'user',
+			'pass' => 'password',
+			'path' => '/database_name',
+			'special' => 'getter value'
+		];
+		$this->assertSame($expected, $return, 'a bespoke getter should be called by toArray');
 
 		$return = $dsn->toArray();
-		$this->assertSame($expected, $return, 'Default port should be in the parsed result');
+		$expected = [
+			'scheme' => 'mysql',
+			'host' => 'somewhereelse',
+			'port' => 3306,
+			'user' => 'user',
+			'pass' => 'password',
+			'path' => '/database_name',
+			'special' => 'nazrat'
+		];
+		$this->assertSame($expected, $return, 'a bespoke getter should be called by toArray');
 
-		$this->assertSame($url, (string) $dsn, 'The regenerated url should be identical to the input');
+		$this->assertSame('nazrat', $dsn->special, 'Special property should return the stored value');
+
+		$url = $dsn->toUrl();
+		$expected = 'mysql://user:password@somewhereelse:3306/database_name?special=nazrat';
+		$this->assertSame($expected, $url, 'Updated values should be reflected in the string version');
 	}
 
 /**
@@ -117,6 +147,8 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 /**
  * bidirectionalProvider
  *
+ * Returns an array of dsns which should parse back to the same string
+ *
  * @return array
  */
 	public function bidirectionalProvider() {
@@ -127,53 +159,29 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 		];
 	}
 
+/**
+ * testParseNoClass
+ *
+ * Parsing a service with no specific dsn class should be an instance of the static class
+ *
+ * @return void
+ */
 	public function testParseNoClass() {
 		$dsn = Dsn::parse('service://host/path');
 		$this->assertInstanceOf('AD7six\Dsn\Dsn', $dsn);
 	}
 
-	public function testParseMysql() {
-		$url = 'mysql://user:password@localhost/database_name';
-		$dsn = Dsn::parse($url);
-		$this->assertInstanceOf('AD7six\Dsn\MysqlDsn', $dsn);
-
-		$expected = [
-			'scheme' => 'mysql',
-			'host' => 'localhost',
-			'port' => 3306,
-			'user' => 'user',
-			'pass' => 'password',
-			'database' => 'database_name',
-		];
-
-		$return = $dsn->toArray();
-		$this->assertSame($expected, $return, 'Default port should be in the parsed result');
-
-		$this->assertSame($url, (string)$dsn, 'The regenerated dsn should be the same as the input');
-	}
-
 /**
- * testParseSqlite
+ * testParseSpecificClass
+ *
+ * Parsing a service where a specific dsn class exists should return an instance of that class
+ * even if, as is the case here, it's another pseudo-abstract class
  *
  * @return void
  */
-	public function testParseSqlite() {
-		$url = 'sqlite:///over/here.db';
-		$dsn = Dsn::parse($url);
-		$this->assertInstanceOf('AD7six\Dsn\SqliteDsn', $dsn);
-
-		$expected = [
-			'scheme' => 'sqlite',
-			'host' => null,
-			'port' => null,
-			'user' => null,
-			'pass' => null,
-			'database' => '/over/here.db',
-		];
-
-		$return = $dsn->toArray();
-		$this->assertSame($expected, $return, 'Default port should be in the parsed result');
-
-		$this->assertSame($url, (string)$dsn, 'The regenerated dsn should be the same as the input');
+	public function testParseSpecificClass() {
+		$dsn = Dsn::parse('db://host/path');
+		$this->assertInstanceOf('AD7six\Dsn\DbDsn', $dsn);
 	}
+
 }

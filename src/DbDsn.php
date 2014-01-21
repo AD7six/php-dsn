@@ -9,88 +9,98 @@ namespace AD7six\Dsn;
 class DbDsn extends Dsn {
 
 /**
- * _defaultPort
+ * is the database key a name or a file?
  *
- * Overriden in subclasses
- *
- * @var int
- */
-	protected $_defaultPort;
-
-/**
- * _keyMap
- *
- * The path is the database name
- *
- * @var array
- */
-	protected $_keyMap = [
-		'path' => 'database'
-	];
-
-/**
- * pathIsPath
- *
- * The parsed url will have a path element which normally is _not_ a path; it's a database name
- * In the case it is a path (sqlite) this property will prevent mishandling of the path as
- * a database name
+ * The database key is a renamed path key. As a parsed path key, it's always a path
+ * But it's _normally_ not a path, rather the name of the database to connect to.
  *
  * @var bool
  */
-	protected $_pathIsPath = false;
+	protected $_databaseIsFile = false;
 
 /**
- * keyMap
+ * getDatabase
  *
- * make sure that the path is translated too, but not if it's already redefined
- *
- * @param mixed $keyMap
- * @return mixed
+ * @return string
  */
-	public function keyMap($keyMap = null) {
-		if ($keyMap) {
-			$keyMap += ['path' => 'database'];
+	public function getDatabase() {
+		if ($this->_databaseIsFile) {
+			return $this->_url['database'];
 		}
-		return parent::keyMap($keyMap);
+		return ltrim($this->_url['database'], '/');
+	}
+
+/**
+ * setDatabase
+ *
+ * @param string $db
+ * @return void
+ */
+	public function setDatabase($db) {
+		if ($this->_databaseIsFile) {
+			return $this->_url['database'] = $db;
+		}
+		$this->_url['database'] = '/' . $db;
 	}
 
 /**
  * parseUrl
  *
- * The database (path) will have a leading slash - strip it off
+ * Handle the parent method only dealing with paths for the file scheme
  *
  * @param string $string
  * @return array
  */
 	public function parseUrl($string) {
-		if ($this->_pathIsPath) {
+		$scheme = null;
+
+		if ($this->_databaseIsFile) {
 			$scheme = substr($string, 0, strpos($string, ':'));
 			$string = 'file' . substr($string, strlen($scheme));
 		}
 
-		$return = parent::parseUrl($string);
+		parent::parseUrl($string);
 
-		if ($this->_pathIsPath) {
+		if ($scheme !== null) {
 			$this->_url['scheme'] = $scheme;
-		} elseif (isset($this->_url['path'])) {
-			$this->_url['path'] = ltrim($this->_url['path'], '/');
 		}
 
-		return $return;
+		if (isset($this->_url['path'])) {
+			$this->_url['database'] = $this->_url['path'];
+			unset($this->_url['path']);
+		}
 	}
 
 /**
- * _toUrl
+ * LSB wrapper
  *
- * Re-prefix the database (path) with a leading slash
+ * @return string
+ */
+	protected static function _class() {
+		return __CLASS__;
+	}
+
+/**
+ * LSB wrapper
  *
- * @param mixed $data
+ * @return string
+ */
+	protected static function _namespace() {
+		return __NAMESPACE__;
+	}
+
+/**
+ * swap the database key for the path key for the parent implementation
+ *
+ * @param array $data
  * @return string
  */
 	protected function _toUrl($data) {
-		if (!$this->_pathIsPath && isset($data['path'])) {
-			$data['path'] = '/' . $data['path'];
+		if (isset($data['database'])) {
+			$data['path'] = $data['database'];
+			unset($data['database']);
 		}
 		return parent::_toUrl($data);
 	}
+
 }
