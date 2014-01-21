@@ -121,7 +121,9 @@ class Dsn {
 
 		$url = array_merge($this->_dsnKeys, $url);
 
-		$this->_url = $url;
+		foreach($url as $key => $val) {
+			$this->$key = $val;
+		}
 	}
 
 /**
