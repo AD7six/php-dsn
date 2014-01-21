@@ -16,7 +16,7 @@ class DbDsn extends Dsn {
  *
  * @var bool
  */
-	protected $_databaseIsFile = false;
+	protected $_databaseIsPath = false;
 
 /**
  * getEngine
@@ -62,7 +62,7 @@ class DbDsn extends Dsn {
  * @return string
  */
 	public function getPath() {
-		if ($this->_databaseIsFile) {
+		if ($this->_databaseIsPath) {
 			return $this->database;
 		}
 		return '/' . $this->getDatabase();
@@ -75,7 +75,7 @@ class DbDsn extends Dsn {
  * @return void
  */
 	public function setPath($path) {
-		if (!$this->_databaseIsFile) {
+		if (!$this->_databaseIsPath) {
 			$path = ltrim($path, '/');
 		}
 		$this->setDatabase($path);
@@ -92,7 +92,7 @@ class DbDsn extends Dsn {
 	public function parseUrl($string) {
 		$engine = null;
 
-		if ($this->_databaseIsFile) {
+		if ($this->_databaseIsPath) {
 			$engine = substr($string, 0, strpos($string, ':'));
 			$string = 'file' . substr($string, strlen($engine));
 		}
