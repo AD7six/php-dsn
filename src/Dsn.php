@@ -25,7 +25,7 @@ class Dsn {
 	protected $_defaultPort;
 
 /**
- * The mandatory keys present in a dsn
+ * The keys present in a dsn
  *
  * When regenerating a dsn string, all other keys are converted to get arguments
  *
@@ -39,6 +39,15 @@ class Dsn {
 		'pass' => null,
 		'path' => null
 	];
+
+/**
+ * _keyMap
+ *
+ * Internal storage of key name translations
+ *
+ * @var array
+ */
+	protected $_keyMap = [];
 
 /**
  * parse a dsn string into a dsn instance
@@ -92,6 +101,22 @@ class Dsn {
 	}
 
 /**
+ * Set or get the key map
+ *
+ * The key map permits translating the parsed array keys
+ *
+ * @param mixed $keyMap
+ * @return array
+ */
+	public function keyMap($keyMap = null) {
+		if (!is_null($keyMap)) {
+			$this->_keyMap = $keyMap;
+		}
+
+		return $this->_keyMap;
+	}
+
+/**
  * parseUrl
  *
  * Parse a url and merge with any extra get arguments defined
@@ -104,9 +129,13 @@ class Dsn {
 
 		$url = parse_url($string);
 		if (!$url || array_keys($url) === ['path']) {
-			return false;
+			throw new \Exception(sprintf('The url %s could not be parsed', $string));
 		}
 
+		$this->_parseUrl($url);
+	}
+
+	protected function _parseUrl($url) {
 		$defaultPort = $this->defaultPort();
 		if ($defaultPort && empty($url['port'])) {
 			$url['port'] = $defaultPort;
@@ -138,7 +167,12 @@ class Dsn {
 
 		$return = [];
 		foreach(array_keys($url) as $key) {
+			if (isset($this->_keyMap[$key])) {
+				$key = $this->_keyMap[$key];
+			}
+
 			$val = $this->$key;
+
 			if ($val !== null) {
 				$return[$key] = $val;
 			}
@@ -218,6 +252,15 @@ class Dsn {
  */
 	public function __get($key) {
 		$getter = 'get' . ucfirst($key);
+		if (method_exists($this, $getter)) {
+			return $this->$getter();
+		}
+
+		if ($aliased = array_search($key, $this->_keyMap)) {
+			$key = $aliased;
+			$getter = 'get' . ucfirst($key);
+		}
+
 		return $this->$getter();
 	}
 

@@ -19,28 +19,78 @@ class DbDsn extends Dsn {
 	protected $_databaseIsFile = false;
 
 /**
+ * _keyMap
+ *
+ * The path is the database name
+ *
+ * @var array
+ */
+	protected $_keyMap = [
+		'scheme' => 'engine',
+		'path' => 'database'
+	];
+
+/**
+ * getEngine
+ *
+ * @return string
+ */
+	public function getScheme() {
+		return $this->getEngine();
+	}
+
+/**
+ * setScheme;
+ *
+ * @param string $db
+ * @return void
+ */
+	public function setScheme($db) {
+		$this->engine = $db;
+	}
+
+/**
  * getDatabase
  *
  * @return string
  */
 	public function getDatabase() {
-		if ($this->_databaseIsFile) {
-			return $this->_url['database'];
-		}
-		return ltrim($this->_url['database'], '/');
+		return $this->_url['database'];
 	}
 
 /**
  * setDatabase
  *
- * @param string $db
+ * @param string $path
  * @return void
  */
 	public function setDatabase($db) {
+		$this->_url['database'] = $db;
+	}
+
+/**
+ * getPath
+ *
+ * @return string
+ */
+	public function getPath() {
 		if ($this->_databaseIsFile) {
-			return $this->_url['database'] = $db;
+			return $this->database;
 		}
-		$this->_url['database'] = '/' . $db;
+		return '/' . $this->getDatabase();
+	}
+
+/**
+ * setPath
+ *
+ * @param string $path
+ * @return void
+ */
+	public function setPath($path) {
+		if (!$this->_databaseIsFile) {
+			$path = ltrim($path, '/');
+		}
+		$this->setDatabase($path);
 	}
 
 /**
@@ -52,23 +102,32 @@ class DbDsn extends Dsn {
  * @return array
  */
 	public function parseUrl($string) {
-		$scheme = null;
+		$engine = null;
 
 		if ($this->_databaseIsFile) {
-			$scheme = substr($string, 0, strpos($string, ':'));
-			$string = 'file' . substr($string, strlen($scheme));
+			$engine = substr($string, 0, strpos($string, ':'));
+			$string = 'file' . substr($string, strlen($engine));
 		}
 
 		parent::parseUrl($string);
 
-		if ($scheme !== null) {
-			$this->_url['scheme'] = $scheme;
+		if ($engine !== null) {
+			$this->setEngine($engine);
 		}
+	}
 
-		if (isset($this->_url['path'])) {
-			$this->_url['database'] = $this->_url['path'];
-			unset($this->_url['path']);
-		}
+/**
+ * return this instance as a dsn url string
+ *
+ * @return string
+ */
+	public function toUrl() {
+		$url = $this->_url;
+		unset($url['engine'], $url['database']);
+		$url['scheme'] = $this->getScheme();
+		$url['path'] = $this->getPath();
+
+		return $this->_toUrl($url);
 	}
 
 /**
@@ -87,20 +146,6 @@ class DbDsn extends Dsn {
  */
 	protected static function _namespace() {
 		return __NAMESPACE__;
-	}
-
-/**
- * swap the database key for the path key for the parent implementation
- *
- * @param array $data
- * @return string
- */
-	protected function _toUrl($data) {
-		if (isset($data['database'])) {
-			$data['path'] = $data['database'];
-			unset($data['database']);
-		}
-		return parent::_toUrl($data);
 	}
 
 }

@@ -17,7 +17,7 @@ class DbDsnTest extends PHPUnit_Framework_TestCase {
 		$dsn->defaultPort(3306);
 
 		$expected = [
-			'scheme' => 'mysql',
+			'engine' => 'mysql',
 			'host' => 'localhost',
 			'port' => 3306,
 			'user' => 'user',
@@ -54,7 +54,7 @@ class DbDsnTest extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('AD7six\Dsn\MysqlDsn', $dsn);
 
 		$expected = [
-			'scheme' => 'mysql',
+			'engine' => 'mysql',
 			'host' => 'localhost',
 			'port' => 3306,
 			'user' => 'user',
@@ -79,7 +79,7 @@ class DbDsnTest extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('AD7six\Dsn\SqliteDsn', $dsn);
 
 		$expected = [
-			'scheme' => 'sqlite',
+			'engine' => 'sqlite',
 			'database' => '/over/here.db',
 		];
 

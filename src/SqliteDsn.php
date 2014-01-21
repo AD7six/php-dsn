@@ -9,7 +9,7 @@ namespace AD7six\Dsn;
 class SqliteDsn extends DbDsn {
 
 /**
- * The database in an sqlite dsn is a file
+ * The path in a sqlite dsn is a path, not a database name
  *
  * @var bool
  */
