@@ -6,7 +6,7 @@
 
 	<testsuites>
 		<testsuite name="Dsn Test Cases">
-			<directory>./tests/Dsn/</directory>
+			<directory>./tests/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

@@ -1,6 +1,6 @@
 <?php
 
-namespace AD7six\Dsn\TestCase;
+namespace AD7six\Dsn\Test\TestCase;
 
 use \AD7six\Dsn\Dsn;
 use \PHPUnit_Framework_TestCase;
