@@ -8,6 +8,9 @@ namespace AD7six\Dsn;
  */
 class Dsn {
 
+/**
+ * Array of scheme => class files
+ */
 	protected static $_schemeMap = [
 		'cassandra' => '\AD7six\Dsn\Db\CassandraDsn',
 		'couchdb' => '\AD7six\Dsn\Db\CouchdbDsn',
@@ -73,6 +76,50 @@ class Dsn {
 			}
 		}
 		return new $className($url);
+	}
+
+/**
+ * Read or change the scheme map
+ *
+ * For example:
+ *
+ * $true = Dsn::map('foo', '\My\Dsn\Class');
+ * $classname = Dsn::map('foo');
+ *
+ * $true = Dsn::map('foo', false); // Remove foo from the map
+ *
+ * $fullMap = Dsn::map();
+ * $false = Dsn::map('unknown');
+ *
+ * $array = ['this' => 'That\Class', 'other' => 'Other\Class', ...];
+ * $fullMap = Dsn::map($array);
+ *
+ * @param mixed $scheme
+ * @param string $class
+ * @return mixed
+ */
+	public static function map($scheme = null, $class = null) {
+		if (is_array($scheme)) {
+			foreach($scheme as $s => $class) {
+				static::map($s, $class);
+			}
+			return static::$_schemeMap;
+		}
+
+		if ($scheme === null) {
+			return static::$_schemeMap;
+		}
+
+		if ($class === null) {
+			return isset(static::$_schemeMap[$scheme]) ? static::$_schemeMap[$scheme] : null;
+		}
+
+		if ($class === false) {
+			unset($_schemeMap[$scheme]);
+			return;
+		}
+
+		return static::$_schemeMap[$scheme] = $class;
 	}
 
 /**
