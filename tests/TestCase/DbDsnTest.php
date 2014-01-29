@@ -51,7 +51,7 @@ class DbDsnTest extends PHPUnit_Framework_TestCase {
 	public function testParseMysql() {
 		$url = 'mysql://user:password@localhost/database_name';
 		$dsn = DbDsn::parse($url);
-		$this->assertInstanceOf('AD7six\Dsn\MysqlDsn', $dsn);
+		$this->assertInstanceOf('AD7six\Dsn\Db\MysqlDsn', $dsn);
 
 		$expected = [
 			'engine' => 'mysql',
@@ -76,7 +76,7 @@ class DbDsnTest extends PHPUnit_Framework_TestCase {
 	public function testParseSqlite() {
 		$url = 'sqlite:///over/here.db';
 		$dsn = DbDsn::parse($url);
-		$this->assertInstanceOf('AD7six\Dsn\SqliteDsn', $dsn);
+		$this->assertInstanceOf('AD7six\Dsn\Db\SqliteDsn', $dsn);
 
 		$expected = [
 			'engine' => 'sqlite',

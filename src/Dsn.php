@@ -8,6 +8,16 @@ namespace AD7six\Dsn;
  */
 class Dsn {
 
+	protected static $_schemeMap = [
+		'cassandra' => '\AD7six\Dsn\Db\CassandraDsn',
+		'couchdb' => '\AD7six\Dsn\Db\CouchdbDsn',
+		'db' => '\AD7six\Dsn\DbDsn',
+		'mongo' => '\AD7six\Dsn\Db\MongodbDsn',
+		'mysql' => '\AD7six\Dsn\Db\MysqlDsn',
+		'postgres' => '\AD7six\Dsn\Db\PostgresDsn',
+		'sqlite' => '\AD7six\Dsn\Db\SqliteDsn',
+	];
+
 /**
  * parsed url as an associative array
  *
@@ -54,11 +64,14 @@ class Dsn {
 			return false;
 		}
 
-		$className  = static::_namespace() . '\\' . ucfirst($scheme) . 'Dsn';
-		if (!class_exists($className)) {
-			$className  = static::_class();
+		if (isset(static::$_schemeMap[$scheme])) {
+			$className = static::$_schemeMap[$scheme];
+		} else {
+			$className  = static::_namespace() . '\\' . ucfirst($scheme) . 'Dsn';
+			if (!class_exists($className)) {
+				$className  = static::_class();
+			}
 		}
-
 		return new $className($url);
 	}
 

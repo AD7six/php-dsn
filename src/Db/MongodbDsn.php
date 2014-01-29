@@ -1,6 +1,8 @@
 <?php
 
-namespace AD7six\Dsn;
+namespace AD7six\Dsn\Db;
+
+use AD7six\Dsn\DbDsn;
 
 /**
  * MongodbDsn
