@@ -4,7 +4,7 @@ namespace AD7six\Dsn\Wrapper;
 
 use AD7six\Dsn\Dsn as DsnInstance;
 
-class Dsn {
+class Dsn implements \ArrayAccess {
 
 /**
  * _keyMap
@@ -46,9 +46,14 @@ class Dsn {
 		];
 		foreach($opts as $key) {
 			if (!empty($options[$key])) {
-				$this->$method($options[$key]);
+				$this->$key($options[$key]);
 			}
 		}
+	}
+
+	public static function parse($url, $options) {
+		$inst = new Dsn($url, $options);
+		return $inst;
 	}
 
 	public function getters($getters = null) {
@@ -83,6 +88,26 @@ class Dsn {
 		return $this->_dsn;
 	}
 
+	public function toArray() {
+		$raw = $this->_dsn->toArray();
+		$allKeys = array_merge(array_keys($raw) + array_keys($this->_getters));
+		$return = [];
+
+		foreach($allKeys as $key) {
+			if (isset($this->_keyMap[$key])) {
+				$key = $this->_keyMap[$key];
+			}
+
+			$val = $this->$key;
+			if ($val !== null) {
+				$return[$key] = $val;
+			}
+
+		}
+
+		return $return;
+	}
+
 /**
  * Get or set the key map
  *
@@ -113,6 +138,26 @@ class Dsn {
 		return $this->_replacements;
 	}
 
+	public function offsetExists($index) {
+		return $this->$index !== null;
+	}
+
+	public function offsetGet($index) {
+		return $this->$index;
+	}
+
+	public function offsetSet($index, $value) {
+		return $this->$index = $value;
+	}
+
+	public function offsetUnset($index) {
+		$this->$index = null;
+	}
+
+	public function count() {
+		return count($this->toArray());
+	}
+
 /**
  * Recursively perform string replacements on array values
  *
@@ -120,19 +165,22 @@ class Dsn {
  * @param array $replacements
  * @return array
  */
-	protected function _replace($data, $replacements) {
+	protected function _replace($data, $replacements = null) {
 		if (!$replacements) {
-			return $data;
-		}
-
-		foreach($data as &$value) {
-			$value = str_replace(array_keys($replacements), array_values($replacements), $value);
-			if (is_array($value)) {
-				$value = $this->_replace($value, $replacements);
+			$replacements = $this->_replacements;
+			if (!$replacements) {
+				return $data;
 			}
 		}
 
-		return $data;
+		if (is_array($data)) {
+			foreach($data as $key => &$value) {
+				$value = $this->_replace($value, $replacements);
+			}
+			return $data;;
+		}
+
+		return str_replace(array_keys($replacements), array_values($replacements), $data);
 	}
 
 /**
@@ -146,7 +194,11 @@ class Dsn {
 			return $this->_getters[$key]($this->_dsn->$key, $this->_dsn);
 		}
 
-		return $this->_dsn->$key;
+		if ($actualKey = array_search($key, $this->_keyMap)) {
+			$key = $actualKey;
+		}
+
+		return $this->_replace($this->_dsn->$key);
 	}
 
 /**
@@ -163,6 +215,10 @@ class Dsn {
 				return;
 			}
 			$value = $return;
+		}
+
+		if ($actualKey = array_search($key, $this->_keyMap)) {
+			$key = $actualKey;
 		}
 
 		$this->_dsn->$key = $value;
