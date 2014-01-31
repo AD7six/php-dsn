@@ -6,7 +6,7 @@ namespace AD7six\Dsn;
  * Dsn
  *
  */
-class Dsn {
+class Dsn implements \ArrayAccess {
 
 /**
  * Array of scheme => class files
@@ -227,6 +227,26 @@ class Dsn {
  */
 	public function toUrl() {
 		return $this->_toUrl($this->_url);
+	}
+
+	public function offsetExists($index) {
+		return $this->$index !== null;
+	}
+
+	public function offsetGet($index) {
+		return $this->$index;
+	}
+
+	public function offsetSet($index, $value) {
+		return $this->$index = $value;
+	}
+
+	public function offsetUnset($index) {
+		$this->$index = null;
+	}
+
+	public function count() {
+		return count($this->toArray());
 	}
 
 /**
