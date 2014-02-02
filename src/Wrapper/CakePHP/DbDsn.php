@@ -14,6 +14,11 @@ class DbDsn extends Dsn {
 		]
 	];
 
+	public static function parse($url, $options = []) {
+		$inst = new DbDsn($url, $options);
+		return $inst->toArray();
+	}
+
 	public function getDatasource() {
 		return 'Database/' . ucfirst($this->_dsn->engine);
 	}

@@ -15,10 +15,19 @@ class CacheDsn extends Dsn {
 		]
 	];
 
+	public static function parse($url, $options = []) {
+		$inst = new CacheDsn($url, $options);
+		return $inst->toArray();
+	}
+
 	protected function _getDefaultOptions() {
 		if (!isset($this->_defaultOptions['replacements']['DURATION'])) {
 			$duration = \Configure::read('debug') ? '+10 seconds' : '+999 days';
 			$this->_defaultOptions['replacements']['DURATION'] = $duration;
+		}
+
+		if (!isset($this->_defaultOptions['replacements']['APP_NAME'])) {
+			$this->_defaultOptions['replacements']['APP_NAME'] = env('APP_NAME');
 		}
 
 		return $this->_defaultOptions;

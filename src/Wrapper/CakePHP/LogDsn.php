@@ -6,7 +6,7 @@ use AD7six\Dsn\Wrapper\Dsn;
 
 class LogDsn extends Dsn {
 
-	protected static $_defaultOptions = [
+	protected $_defaultOptions = [
 		'keyMap' => [
 			'scheme' => 'engine'
 		],
@@ -14,6 +14,11 @@ class LogDsn extends Dsn {
 			'/LOGS/' => LOGS
 		]
 	];
+
+	public static function parse($url, $options = []) {
+		$inst = new LogDsn($url, $options);
+		return $inst->toArray();
+	}
 
 	public function getEngine() {
 		return ucfirst($this->_dsn->scheme);
