@@ -130,9 +130,7 @@ class Dsn implements \ArrayAccess {
  * @return void
  */
 	public function __construct($url = '') {
-		if ($url) {
-			$this->parseUrl($url);
-		}
+		$this->parseUrl($url);
 	}
 
 /**
@@ -165,7 +163,7 @@ class Dsn implements \ArrayAccess {
 
 		$url = parse_url($string);
 		if (!$url || array_keys($url) === ['path']) {
-			throw new \Exception(sprintf('The url %s could not be parsed', $string));
+			throw new \Exception(sprintf('The url \'%s\' could not be parsed', $string));
 		}
 
 		$this->_parseUrl($url);

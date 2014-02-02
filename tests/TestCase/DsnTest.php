@@ -99,6 +99,26 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 		];
 	}
 
+/**
+ * testParseUrlNoUrlThrows
+ *
+ * @expectedException \Exception
+ * @expectedExceptionMessage The url '' could not be parsed
+ */
+	public function testParseUrlNoUrlThrows() {
+		$dsn = new Dsn();
+	}
+
+/**
+ * testParseUrlNoUrlThrows
+ *
+ * @expectedException \Exception
+ * @expectedExceptionMessage The url '' could not be parsed
+ */
+	public function testParseUrlNoUrlThrows2() {
+		$dsn = new Dsn('');
+	}
+
 	public function testGettersAndSetters() {
 		$url = 'mysql://user:password@localhost:3306/database_name';
 		$dsn = new TestDsn($url);
