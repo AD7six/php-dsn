@@ -126,6 +126,24 @@ class Dsn {
 	}
 
 /**
+ * LSB wrapper
+ *
+ * @return string
+ */
+	protected static function _class() {
+		return __CLASS__;
+	}
+
+/**
+ * LSB wrapper
+ *
+ * @return string
+ */
+	protected static function _namespace() {
+		return __NAMESPACE__;
+	}
+
+/**
  * Create a new instance, parse the url if passed
  *
  * @param string $url
@@ -199,7 +217,8 @@ class Dsn {
 		$url = array_merge($this->_uriKeys, $url);
 
 		foreach($url as $key => $val) {
-			$this->$key = $val;
+			$setter = 'set' . ucfirst($key);
+			$this->$setter($val);
 		}
 	}
 
@@ -215,7 +234,8 @@ class Dsn {
 
 		$return = [];
 		foreach(array_keys($url) as $key) {
-			$val = $this->$key;
+			$getter = 'get' . ucfirst($key);
+			$val = $this->$getter();
 
 			if ($val !== null) {
 				$return[$key] = $val;
@@ -232,24 +252,6 @@ class Dsn {
  */
 	public function toUrl() {
 		return $this->_toUrl($this->_url);
-	}
-
-/**
- * LSB wrapper
- *
- * @return string
- */
-	protected static function _class() {
-		return __CLASS__;
-	}
-
-/**
- * LSB wrapper
- *
- * @return string
- */
-	protected static function _namespace() {
-		return __NAMESPACE__;
 	}
 
 /**
