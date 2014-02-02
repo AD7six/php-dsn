@@ -4,7 +4,7 @@ namespace AD7six\Dsn\Wrapper;
 
 use AD7six\Dsn\Dsn as DsnInstance;
 
-class Dsn implements \ArrayAccess {
+class Dsn {
 
 /**
  * _defaultOptions
@@ -127,26 +127,6 @@ class Dsn implements \ArrayAccess {
 		}
 
 		return $this->_replacements;
-	}
-
-	public function offsetExists($index) {
-		return $this->$index !== null;
-	}
-
-	public function offsetGet($index) {
-		return $this->$index;
-	}
-
-	public function offsetSet($index, $value) {
-		return $this->$index = $value;
-	}
-
-	public function offsetUnset($index) {
-		$this->$index = null;
-	}
-
-	public function count() {
-		return count($this->toArray());
 	}
 
 /**
