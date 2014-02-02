@@ -297,7 +297,7 @@ class Dsn {
 	}
 
 /**
- * Allow accessing any of the parsed parts of a dsn
+ * Allow accessing any of the parsed parts of a dsn as an object property
  *
  * @param mixed $key
  * @return mixed
@@ -308,7 +308,7 @@ class Dsn {
 	}
 
 /**
- * Allow setting any of the parsed parts of a dsn
+ * Allow setting any of the parsed parts of a dsn by updating the "public" property
  *
  * @param string $key
  * @param string $value
@@ -329,7 +329,7 @@ class Dsn {
 	}
 
 /**
- * Handle dynamic getters and setters
+ * Handle dynamic/missing getters and setters
  *
  * @param string $method
  * @param array $args
