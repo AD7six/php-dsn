@@ -39,6 +39,10 @@ class Dsn implements \ArrayAccess {
  */
 	protected $_replacements = [];
 
+	public static function parse($url, $options = []) {
+		return new Dsn($url, $options);
+	}
+
 	public function __construct($url = '', $options = []) {
 		$this->_dsn = DsnInstance::parse($url);
 
@@ -52,10 +56,6 @@ class Dsn implements \ArrayAccess {
 				$this->$key($options[$key]);
 			}
 		}
-	}
-
-	public static function parse($url, $options = []) {
-		return new Dsn($url, $options);
 	}
 
 	protected function _getDefaultOptions() {
@@ -168,7 +168,7 @@ class Dsn implements \ArrayAccess {
 			foreach($data as $key => &$value) {
 				$value = $this->_replace($value, $replacements);
 			}
-			return $data;;
+			return $data;
 		}
 
 		return str_replace(array_keys($replacements), array_values($replacements), $data);
