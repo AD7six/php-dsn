@@ -7,6 +7,14 @@ use AD7six\Dsn\Dsn as DsnInstance;
 class Dsn implements \ArrayAccess {
 
 /**
+ * _defaultOptions
+ *
+ * @var array
+ */
+	protected $_defaultOptions = [
+	];
+
+/**
  * _keyMap
  *
  * Internal storage of key name translations
@@ -31,18 +39,12 @@ class Dsn implements \ArrayAccess {
  */
 	protected $_replacements = [];
 
-	protected $_getters = [];
-
-	protected $_setters = [];
-
 	public function __construct($url = '', $options = []) {
 		$this->_dsn = DsnInstance::parse($url);
 
 		$opts = [
 			'keyMap',
 			'replacements',
-			'getters',
-			'setters'
 		];
 		foreach($opts as $key) {
 			if (!empty($options[$key])) {
@@ -52,36 +54,28 @@ class Dsn implements \ArrayAccess {
 	}
 
 	public static function parse($url, $options = []) {
+		$options = static::_mergeDefaultOptions($options);
 		$inst = new Dsn($url, $options);
 		return $inst;
 	}
 
-	public function getters($getters = null) {
-		if (!$getters) {
-			return $this->_getters;
-		}
-
-		foreach($getters as $key => $callable) {
-			$this->addGetter($key, $callable);
-		}
+	protected static function _getDefaultOptions() {
+		return static::$_defaultOptions;
 	}
 
-	public function setters($setters = null) {
-		if (!$setters) {
-			return $this->_setters;
+	protected static function _mergeDefaultOptions($options = [], $defaults = null) {
+		if ($defaults === null) {
+			$defaults = static::$_getDefaultOptions();
 		}
 
-		foreach($setters as $key => $callable) {
-			$this->addSetter($key, $callable);
+		foreach(array_keys($defaults) as $key) {
+			if (!isset($options[$key])) {
+				$options[$key] = [];
+			}
+			$options[$key] += $defaults[$key];
 		}
-	}
 
-	public function addGetter($key, Callable $callable) {
-		$this->_getters[$key] = $callable;
-	}
-
-	public function addSetter($key, Callable $callable) {
-		$this->_setters[$key] = $callable;
+		return $options;
 	}
 
 	public function getDsn() {
@@ -90,7 +84,7 @@ class Dsn implements \ArrayAccess {
 
 	public function toArray() {
 		$raw = $this->_dsn->toArray();
-		$allKeys = array_merge(array_keys($raw) + array_keys($this->_getters));
+		$allKeys = array_keys($raw);
 		$return = [];
 
 		foreach($allKeys as $key) {
@@ -190,10 +184,6 @@ class Dsn implements \ArrayAccess {
  * @return mixed
  */
 	public function __get($key) {
-		if (isset($this->_getters[$key])) {
-			return $this->_getters[$key]($this->_dsn->$key, $this->_dsn);
-		}
-
 		if ($actualKey = array_search($key, $this->_keyMap)) {
 			$key = $actualKey;
 		}
@@ -209,14 +199,6 @@ class Dsn implements \ArrayAccess {
  * @return void
  */
 	public function __set($key, $value) {
-		if (isset($this->_setters[$key])) {
-			$return = $this->_setters[$key]($value, $key, $this->_dsn);
-			if ($return === null) {
-				return;
-			}
-			$value = $return;
-		}
-
 		if ($actualKey = array_search($key, $this->_keyMap)) {
 			$key = $actualKey;
 		}
@@ -232,25 +214,6 @@ class Dsn implements \ArrayAccess {
  * @return void
  */
 	public function __call($method, $args) {
-		$getSet = substr($method, 0, 3);
-		if ($getSet === 'get' || $getSet === 'set') {
-			$key = lcfirst(substr($method, 3));
-
-			if ($getSet === 'get') {
-				if (isset($this->_getters[$key])) {
-					return $this->_getters[$key]($this->_dsn->$key, $this->_dsn);
-				}
-			} else {
-				if (isset($this->_setters[$key])) {
-					$return = $this->_setters[$key]($value, $key, $this->_dsn);
-					if ($return !== null) {
-						$this->_dsn->$key = $return;
-					}
-					return;
-				}
-			}
-		}
-
 		return call_user_func_array([$this->_dsn, $method], $args);
 	}
 }
