@@ -44,7 +44,7 @@ class Dsn implements \ArrayAccess {
  *
  * @var array
  */
-	protected $_dsnKeys = [
+	protected $_uriKeys = [
 		'scheme' => null,
 		'host' => null,
 		'port' => null,
@@ -191,7 +191,7 @@ class Dsn implements \ArrayAccess {
 			$url += $extra;
 		}
 
-		$url = array_merge($this->_dsnKeys, $url);
+		$url = array_merge($this->_uriKeys, $url);
 
 		foreach($url as $key => $val) {
 			$this->$key = $val;
@@ -274,7 +274,7 @@ class Dsn implements \ArrayAccess {
  * @return string
  */
 	protected function _toUrl($data) {
-		$url = array_intersect_key($data, $this->_dsnKeys);
+		$url = array_intersect_key($data, $this->_uriKeys);
 
 		$return = $url['scheme'] . '://';
 		if (!empty($url['user'])) {
@@ -292,7 +292,7 @@ class Dsn implements \ArrayAccess {
 		}
 		$return .= $url['path'];
 
-		$query = array_diff_key($data, $this->_dsnKeys);
+		$query = array_diff_key($data, $this->_uriKeys);
 		if ($query) {
 			foreach($query as $key => &$value) {
 				$value = "$key=$value";
