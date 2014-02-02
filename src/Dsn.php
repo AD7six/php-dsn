@@ -10,6 +10,8 @@ class Dsn {
 
 /**
  * Array of scheme => class files
+ *
+ * @var array
  */
 	protected static $_schemeMap = [
 		'cassandra' => '\AD7six\Dsn\Db\CassandraDsn',
@@ -65,7 +67,7 @@ class Dsn {
 	public static function parse($url) {
 		$scheme = substr($url, 0, strpos($url, ':'));
 		if (!$scheme) {
-			return false;
+			throw new \Exception(sprintf('The url \'%s\' could not be parsed', $url));
 		}
 
 		if (isset(static::$_schemeMap[$scheme])) {
