@@ -38,6 +38,9 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 		$dsn = new Dsn($url);
 		$return = $dsn->toArray();
 		$this->assertSame($expected, $return, 'The url should parse as expected');
+
+		$return = $dsn->__toString();
+		$this->assertSame($url, $return, 'The dsn should parse back to the same url');
 	}
 
 /**
@@ -79,6 +82,18 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 					'path' => '/database_name',
 					'encoding' => 'utf8',
 					'flags' => '0',
+				]
+			],
+			[
+				'mysql+Fooby.DoobyDriver://user:password@localhost:3306/database_name',
+				[
+					'scheme' => 'mysql',
+					'adapter' => 'Fooby.DoobyDriver',
+					'host' => 'localhost',
+					'port' => 3306,
+					'user' => 'user',
+					'pass' => 'password',
+					'path' => '/database_name',
 				]
 			]
 		];

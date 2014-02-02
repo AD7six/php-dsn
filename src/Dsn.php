@@ -46,6 +46,7 @@ class Dsn implements \ArrayAccess {
  */
 	protected $_uriKeys = [
 		'scheme' => null,
+		'adapter' => null,
 		'host' => null,
 		'port' => null,
 		'user' => null,
@@ -179,6 +180,10 @@ class Dsn implements \ArrayAccess {
  * @return void
  */
 	protected function _parseUrl($url) {
+		if (strpos($url['scheme'], '+')) {
+			list($url['scheme'], $url['adapter']) = explode('+', $url['scheme']);
+		}
+
 		$defaultPort = $this->defaultPort();
 		if ($defaultPort && empty($url['port'])) {
 			$url['port'] = $defaultPort;
@@ -276,7 +281,12 @@ class Dsn implements \ArrayAccess {
 	protected function _toUrl($data) {
 		$url = array_intersect_key($data, $this->_uriKeys);
 
-		$return = $url['scheme'] . '://';
+		if ($url['adapter']) {
+			$return = $url['scheme'] . '+' . $url['adapter'] . '://';
+		} else {
+			$return = $url['scheme'] . '://';
+		}
+
 		if (!empty($url['user'])) {
 			$return .= $url['user'];
 			if (!empty($url['pass'])) {
@@ -284,6 +294,7 @@ class Dsn implements \ArrayAccess {
 			}
 			$return .= '@';
 		}
+
 		$return .= $url['host'];
 
 		$defaultPort = $this->defaultPort();
