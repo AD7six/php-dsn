@@ -42,6 +42,7 @@ class Dsn implements \ArrayAccess {
 	public function __construct($url = '', $options = []) {
 		$this->_dsn = DsnInstance::parse($url);
 
+		$options = $this->_mergeDefaultOptions($options);
 		$opts = [
 			'keyMap',
 			'replacements',
@@ -54,19 +55,15 @@ class Dsn implements \ArrayAccess {
 	}
 
 	public static function parse($url, $options = []) {
-		$options = static::_mergeDefaultOptions($options);
-		$inst = new Dsn($url, $options);
-		return $inst;
+		return new Dsn($url, $options);
 	}
 
-	protected static function _getDefaultOptions() {
-		return static::$_defaultOptions;
+	protected function _getDefaultOptions() {
+		return $this->_defaultOptions;
 	}
 
-	protected static function _mergeDefaultOptions($options = [], $defaults = null) {
-		if ($defaults === null) {
-			$defaults = static::$_getDefaultOptions();
-		}
+	protected function _mergeDefaultOptions($options = []) {
+		$defaults = $this->_getDefaultOptions();
 
 		foreach(array_keys($defaults) as $key) {
 			if (!isset($options[$key])) {
@@ -184,11 +181,9 @@ class Dsn implements \ArrayAccess {
  * @return mixed
  */
 	public function __get($key) {
-		if ($actualKey = array_search($key, $this->_keyMap)) {
-			$key = $actualKey;
-		}
-
-		return $this->_replace($this->_dsn->$key);
+		$getter = 'get' . ucfirst($key);
+		$val = $this->$getter();
+		return $this->_replace($val);
 	}
 
 /**
@@ -199,11 +194,8 @@ class Dsn implements \ArrayAccess {
  * @return void
  */
 	public function __set($key, $value) {
-		if ($actualKey = array_search($key, $this->_keyMap)) {
-			$key = $actualKey;
-		}
-
-		$this->_dsn->$key = $value;
+		$setter = 'set' . ucfirst($key);
+		$this->$setter($value);
 	}
 
 /**
