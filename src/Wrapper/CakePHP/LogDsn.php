@@ -6,7 +6,7 @@ use AD7six\Dsn\Wrapper\Dsn;
 
 class LogDsn extends Dsn {
 
-	public static function parse($url, $options) {
+	public static function parse($url, $options = []) {
 		$keyMap = [
 			'scheme' => 'engine'
 		];

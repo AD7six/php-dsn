@@ -51,7 +51,7 @@ class Dsn implements \ArrayAccess {
 		}
 	}
 
-	public static function parse($url, $options) {
+	public static function parse($url, $options = []) {
 		$inst = new Dsn($url, $options);
 		return $inst;
 	}
