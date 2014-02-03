@@ -22,6 +22,9 @@ class TestDsn extends Dsn {
 	}
 }
 
+class SpecialTestDsn extends Dsn {
+}
+
 /**
  * DsnTest
  *
@@ -217,6 +220,21 @@ class DsnTest extends PHPUnit_Framework_TestCase {
 	public function testParseSpecificClass() {
 		$dsn = Dsn::parse('db://host/path');
 		$this->assertInstanceOf('AD7six\Dsn\DbDsn', $dsn);
+	}
+
+/**
+ * testMap
+ *
+ * @return void
+ */
+	public function testMap() {
+		Dsn::map('special', '\AD7six\Dsn\Test\TestCase\SpecialTestDsn');
+		$dsn = Dsn::parse('special://host/path');
+		$this->assertInstanceOf(
+			'\AD7six\Dsn\Test\TestCase\SpecialTestDsn',
+			$dsn,
+			'Modifying the scheme map should be honored'
+		);
 	}
 
 }
