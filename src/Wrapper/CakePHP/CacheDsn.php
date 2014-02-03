@@ -34,6 +34,11 @@ class CacheDsn extends Dsn {
 	}
 
 	public function getEngine() {
+		$adapter = $this->_dsn->adapter;
+
+		if ($adapter) {
+			return $adapter;
+		}
 		return ucfirst($this->_dsn->scheme);
 	}
 

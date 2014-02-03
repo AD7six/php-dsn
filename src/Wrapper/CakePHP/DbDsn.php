@@ -6,7 +6,7 @@ use AD7six\Dsn\Wrapper\Dsn;
 
 class DbDsn extends Dsn {
 
-	protected static $_defaultOptions = [
+	protected $_defaultOptions = [
 		'keyMap' => [
 			'engine' => 'datasource',
 			'user' => 'login',
@@ -20,6 +20,11 @@ class DbDsn extends Dsn {
 	}
 
 	public function getDatasource() {
+		$adapter = $this->_dsn->adapter;
+
+		if ($adapter) {
+			return $adapter;
+		}
 		return 'Database/' . ucfirst($this->_dsn->engine);
 	}
 

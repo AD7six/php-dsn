@@ -21,10 +21,16 @@ class LogDsn extends Dsn {
 	}
 
 	public function getEngine() {
+		$adapter = $this->_dsn->adapter;
+
+		if ($adapter) {
+			return $adapter;
+		}
 		return ucfirst($this->_dsn->scheme);
 	}
 
 	public function setEngine($value) {
 		$this->_dsn->scheme = lcfirst($value);
 	}
+
 }
