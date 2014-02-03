@@ -66,6 +66,10 @@ class Dsn {
  */
 	public static function parse($url) {
 		$scheme = substr($url, 0, strpos($url, ':'));
+		if (strpos($scheme, '+')) {
+			$scheme = substr($scheme, 0, strpos($scheme, '+'));
+		}
+
 		if (!$scheme) {
 			throw new \Exception(sprintf('The url \'%s\' could not be parsed', $url));
 		}
