@@ -6,7 +6,7 @@ php:
 
 before_script:
   - composer self-update
-  - composer install
+  - composer dump-autoload
   - pear install --alldeps PHP_CodeSniffer
   - phpenv rehash
 
