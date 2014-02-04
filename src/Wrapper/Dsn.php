@@ -160,7 +160,7 @@ class Dsn
             return $data;
         }
 
-        return strreplace(array_keys($replacements), array_values($replacements), $data);
+        return str_replace(array_keys($replacements), array_values($replacements), $data);
     }
 
 /**
