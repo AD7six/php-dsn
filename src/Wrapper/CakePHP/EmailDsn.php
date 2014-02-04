@@ -10,6 +10,8 @@ class EmailDsn extends Dsn
     protected $defaultOptions = [
         'keyMap' => [
             'scheme' => 'transport',
+            'user' => 'username',
+            'pass' => 'password',
         ]
     ];
 
@@ -19,7 +21,23 @@ class EmailDsn extends Dsn
         return $inst->toArray();
     }
 
-    public function getTransport()
+    public function getPath()
+    {
+        return null;
+    }
+
+    public function getTimeout()
+    {
+        $timeout = $this->dsn->timeout;
+
+        if ($timeout === null) {
+            return;
+        }
+
+        return (int) $timeout;
+    }
+
+    public function getScheme()
     {
         $adapter = $this->dsn->adapter;
 
@@ -29,7 +47,41 @@ class EmailDsn extends Dsn
         return ucfirst($this->dsn->scheme);
     }
 
-    public function setTransport($value)
+    public function getMessageId()
+    {
+        $return = $this->dsn->messageId;
+
+        if ($return === null) {
+            return;
+        }
+
+        return (bool) $return;
+    }
+
+    public function getTemplate()
+    {
+        $return = $this->dsn->template;
+
+        if ($return === null) {
+            return;
+        }
+
+        return (bool) $return;
+    }
+
+    public function getLayout()
+    {
+        $return = $this->dsn->layout;
+
+        if ($return === null) {
+            return;
+        }
+
+        return (bool) $return;
+    }
+
+
+    public function setScheme($value)
     {
         $this->dsn->scheme = lcfirst($value);
     }

@@ -313,6 +313,17 @@ class Dsn
         $query = array_diff_key($data, $this->uriKeys);
         if ($query) {
             foreach ($query as $key => &$value) {
+                if (is_array($value)) {
+
+                    $intermediate = [];
+                    foreach ($value as $k => $v) {
+                        $v = urlencode($v);
+                        $intermediate[] = "{$key}[$k]=$v";
+                    }
+                    $value = implode($intermediate, '&');
+
+                    continue;
+                }
                 $value = "$key=$value";
             }
             $return .= '?' . implode($query, '&');
