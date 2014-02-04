@@ -5,31 +5,36 @@ namespace AD7six\Dsn\Test\TestCase;
 use \AD7six\Dsn\Dsn;
 use \PHPUnit_Framework_TestCase;
 
-class TestDsn extends Dsn {
+class TestDsn extends Dsn
+{
 
-	public function getSpecial() {
-		static $fakeReturn;
+    public function getSpecial()
+    {
+        static $fakeReturn;
 
-		if (!$fakeReturn) {
-			$fakeReturn = true;
-			return 'getter value';
-		}
-		return $this->url['special'];
-	}
+        if (!$fakeReturn) {
+            $fakeReturn = true;
+            return 'getter value';
+        }
+        return $this->url['special'];
+    }
 
-	public function setSpecial($val) {
-		$this->url['special'] = strrev($val);
-	}
+    public function setSpecial($val)
+    {
+        $this->url['special'] = strrev($val);
+    }
 }
 
-class SpecialTestDsn extends Dsn {
+class SpecialTestDsn extends Dsn
+{
 }
 
 /**
  * DsnTest
  *
  */
-class DsnTest extends PHPUnit_Framework_TestCase {
+class DsnTest extends PHPUnit_Framework_TestCase
+{
 
 /**
  * testParseUrl
@@ -37,14 +42,15 @@ class DsnTest extends PHPUnit_Framework_TestCase {
  * @dataProvider parseUrlProvider
  * @return void
  */
-	public function testParseUrl($url, $expected) {
-		$dsn = new Dsn($url);
-		$return = $dsn->toArray();
-		$this->assertSame($expected, $return, 'The url should parse as expected');
+    public function testParseUrl($url, $expected)
+    {
+        $dsn = new Dsn($url);
+        $return = $dsn->toArray();
+        $this->assertSame($expected, $return, 'The url should parse as expected');
 
-		$return = $dsn->__toString();
-		$this->assertSame($url, $return, 'The dsn should parse back to the same url');
-	}
+        $return = $dsn->__toString();
+        $this->assertSame($url, $return, 'The dsn should parse back to the same url');
+    }
 
 /**
  * parseUrlProvider
@@ -53,54 +59,55 @@ class DsnTest extends PHPUnit_Framework_TestCase {
  *
  * @return void
  */
-	public function parseUrlProvider() {
-		return [
-			[
-				'service://host/path',
-				[
-					'scheme' => 'service',
-					'host' => 'host',
-					'path' => '/path'
-				]
-			],
-			[
-				'mysql://user:password@localhost:3306/database_name',
-				[
-					'scheme' => 'mysql',
-					'host' => 'localhost',
-					'port' => 3306,
-					'user' => 'user',
-					'pass' => 'password',
-					'path' => '/database_name',
-				]
-			],
-			[
-				'mysql://user:password@localhost:3306/database_name?encoding=utf8&flags=0',
-				[
-					'scheme' => 'mysql',
-					'host' => 'localhost',
-					'port' => 3306,
-					'user' => 'user',
-					'pass' => 'password',
-					'path' => '/database_name',
-					'encoding' => 'utf8',
-					'flags' => '0',
-				]
-			],
-			[
-				'mysql+Fooby.DoobyDriver://user:password@localhost:3306/database_name',
-				[
-					'scheme' => 'mysql',
-					'adapter' => 'Fooby.DoobyDriver',
-					'host' => 'localhost',
-					'port' => 3306,
-					'user' => 'user',
-					'pass' => 'password',
-					'path' => '/database_name',
-				]
-			]
-		];
-	}
+    public function parseUrlProvider()
+    {
+        return [
+            [
+                'service://host/path',
+                [
+                    'scheme' => 'service',
+                    'host' => 'host',
+                    'path' => '/path'
+                ]
+            ],
+            [
+                'mysql://user:password@localhost:3306/database_name',
+                [
+                    'scheme' => 'mysql',
+                    'host' => 'localhost',
+                    'port' => 3306,
+                    'user' => 'user',
+                    'pass' => 'password',
+                    'path' => '/database_name',
+                ]
+            ],
+            [
+                'mysql://user:password@localhost:3306/database_name?encoding=utf8&flags=0',
+                [
+                    'scheme' => 'mysql',
+                    'host' => 'localhost',
+                    'port' => 3306,
+                    'user' => 'user',
+                    'pass' => 'password',
+                    'path' => '/database_name',
+                    'encoding' => 'utf8',
+                    'flags' => '0',
+                ]
+            ],
+            [
+                'mysql+Fooby.DoobyDriver://user:password@localhost:3306/database_name',
+                [
+                    'scheme' => 'mysql',
+                    'adapter' => 'Fooby.DoobyDriver',
+                    'host' => 'localhost',
+                    'port' => 3306,
+                    'user' => 'user',
+                    'pass' => 'password',
+                    'path' => '/database_name',
+                ]
+            ]
+        ];
+    }
 
 /**
  * testParseUrlNoUrlThrows
@@ -108,9 +115,10 @@ class DsnTest extends PHPUnit_Framework_TestCase {
  * @expectedException \Exception
  * @expectedExceptionMessage The url '' could not be parsed
  */
-	public function testParseUrlNoUrlThrows() {
-		$dsn = new Dsn();
-	}
+    public function testParseUrlNoUrlThrows()
+    {
+        $dsn = new Dsn();
+    }
 
 /**
  * testParseUrlNoUrlThrows
@@ -118,57 +126,59 @@ class DsnTest extends PHPUnit_Framework_TestCase {
  * @expectedException \Exception
  * @expectedExceptionMessage The url '' could not be parsed
  */
-	public function testParseUrlNoUrlThrows2() {
-		$dsn = new Dsn('');
-	}
+    public function testParseUrlNoUrlThrows2()
+    {
+        $dsn = new Dsn('');
+    }
 
-	public function testGettersAndSetters() {
-		$url = 'mysql://user:password@localhost:3306/database_name';
-		$dsn = new TestDsn($url);
+    public function testGettersAndSetters()
+    {
+        $url = 'mysql://user:password@localhost:3306/database_name';
+        $dsn = new TestDsn($url);
 
-		$dsn->host = 'somewhereelse';
-		$return = $dsn->toArray();
-		$expected = [
-			'scheme' => 'mysql',
-			'host' => 'somewhereelse',
-			'port' => 3306,
-			'user' => 'user',
-			'pass' => 'password',
-			'path' => '/database_name',
-		];
-		$this->assertSame($expected, $return, 'changed values should take effect in toArray');
+        $dsn->host = 'somewhereelse';
+        $return = $dsn->toArray();
+        $expected = [
+            'scheme' => 'mysql',
+            'host' => 'somewhereelse',
+            'port' => 3306,
+            'user' => 'user',
+            'pass' => 'password',
+            'path' => '/database_name',
+        ];
+        $this->assertSame($expected, $return, 'changed values should take effect in toArray');
 
-		$dsn->special = 'tarzan';
-		$return = $dsn->toArray();
-		$expected = [
-			'scheme' => 'mysql',
-			'host' => 'somewhereelse',
-			'port' => 3306,
-			'user' => 'user',
-			'pass' => 'password',
-			'path' => '/database_name',
-			'special' => 'getter value'
-		];
-		$this->assertSame($expected, $return, 'a bespoke getter should be called by toArray');
+        $dsn->special = 'tarzan';
+        $return = $dsn->toArray();
+        $expected = [
+            'scheme' => 'mysql',
+            'host' => 'somewhereelse',
+            'port' => 3306,
+            'user' => 'user',
+            'pass' => 'password',
+            'path' => '/database_name',
+            'special' => 'getter value'
+        ];
+        $this->assertSame($expected, $return, 'a bespoke getter should be called by toArray');
 
-		$return = $dsn->toArray();
-		$expected = [
-			'scheme' => 'mysql',
-			'host' => 'somewhereelse',
-			'port' => 3306,
-			'user' => 'user',
-			'pass' => 'password',
-			'path' => '/database_name',
-			'special' => 'nazrat'
-		];
-		$this->assertSame($expected, $return, 'a bespoke getter should be called by toArray');
+        $return = $dsn->toArray();
+        $expected = [
+            'scheme' => 'mysql',
+            'host' => 'somewhereelse',
+            'port' => 3306,
+            'user' => 'user',
+            'pass' => 'password',
+            'path' => '/database_name',
+            'special' => 'nazrat'
+        ];
+        $this->assertSame($expected, $return, 'a bespoke getter should be called by toArray');
 
-		$this->assertSame('nazrat', $dsn->special, 'Special property should return the stored value');
+        $this->assertSame('nazrat', $dsn->special, 'Special property should return the stored value');
 
-		$url = $dsn->toUrl();
-		$expected = 'mysql://user:password@somewhereelse:3306/database_name?special=nazrat';
-		$this->assertSame($expected, $url, 'Updated values should be reflected in the string version');
-	}
+        $url = $dsn->toUrl();
+        $expected = 'mysql://user:password@somewhereelse:3306/database_name?special=nazrat';
+        $this->assertSame($expected, $url, 'Updated values should be reflected in the string version');
+    }
 
 /**
  * testBidirectionalUrl
@@ -177,10 +187,11 @@ class DsnTest extends PHPUnit_Framework_TestCase {
  * @param string $url
  * @return void
  */
-	public function testBidirectionalUrl($url)  {
-		$dsn = new Dsn($url);
-		$this->assertSame($url, (string) $dsn, 'The regenerated url should be identical to the input');
-	}
+    public function testBidirectionalUrl($url)
+    {
+        $dsn = new Dsn($url);
+        $this->assertSame($url, (string) $dsn, 'The regenerated url should be identical to the input');
+    }
 
 /**
  * bidirectionalProvider
@@ -189,13 +200,14 @@ class DsnTest extends PHPUnit_Framework_TestCase {
  *
  * @return array
  */
-	public function bidirectionalProvider() {
-		return [
-			['service://host/path'],
-			['mysql://user:password@localhost:3306/database_name'],
-			['mysql://user:password@localhost:3306/database_name?encoding=utf8&flags=0']
-		];
-	}
+    public function bidirectionalProvider()
+    {
+        return [
+            ['service://host/path'],
+            ['mysql://user:password@localhost:3306/database_name'],
+            ['mysql://user:password@localhost:3306/database_name?encoding=utf8&flags=0']
+        ];
+    }
 
 /**
  * testParseNoClass
@@ -204,10 +216,11 @@ class DsnTest extends PHPUnit_Framework_TestCase {
  *
  * @return void
  */
-	public function testParseNoClass() {
-		$dsn = Dsn::parse('service://host/path');
-		$this->assertInstanceOf('AD7six\Dsn\Dsn', $dsn);
-	}
+    public function testParseNoClass()
+    {
+        $dsn = Dsn::parse('service://host/path');
+        $this->assertInstanceOf('AD7six\Dsn\Dsn', $dsn);
+    }
 
 /**
  * testParseSpecificClass
@@ -217,24 +230,25 @@ class DsnTest extends PHPUnit_Framework_TestCase {
  *
  * @return void
  */
-	public function testParseSpecificClass() {
-		$dsn = Dsn::parse('db://host/path');
-		$this->assertInstanceOf('AD7six\Dsn\DbDsn', $dsn);
-	}
+    public function testParseSpecificClass()
+    {
+        $dsn = Dsn::parse('db://host/path');
+        $this->assertInstanceOf('AD7six\Dsn\DbDsn', $dsn);
+    }
 
 /**
  * testMap
  *
  * @return void
  */
-	public function testMap() {
-		Dsn::map('special', '\AD7six\Dsn\Test\TestCase\SpecialTestDsn');
-		$dsn = Dsn::parse('special://host/path');
-		$this->assertInstanceOf(
-			'\AD7six\Dsn\Test\TestCase\SpecialTestDsn',
-			$dsn,
-			'Modifying the scheme map should be honored'
-		);
-	}
-
+    public function testMap()
+    {
+        Dsn::map('special', '\AD7six\Dsn\Test\TestCase\SpecialTestDsn');
+        $dsn = Dsn::parse('special://host/path');
+        $this->assertInstanceOf(
+            '\AD7six\Dsn\Test\TestCase\SpecialTestDsn',
+            $dsn,
+            'Modifying the scheme map should be honored'
+        );
+    }
 }
