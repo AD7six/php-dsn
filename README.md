@@ -1,5 +1,8 @@
 # PHP DSN
 
+[![Build Status](https://travis-ci.org/AD7six/php-dsn.png?branch=master)](https://travis-ci.org/AD7six/php-dsn)
+[![Coverage Status](https://coveralls.io/repos/AD7six/php-dsn/badge.png?branch=master)](https://coveralls.io/r/AD7six/php-dsn?branch=master)
+
 A utility for parsing and generating service DSNs
 
 ## Basic usage
