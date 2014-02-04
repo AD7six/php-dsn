@@ -19,10 +19,16 @@ class LogDsn extends Dsn
     public static function parse($url, $options = [])
     {
         $inst = new LogDsn($url, $options);
+
         return $inst->toArray();
     }
 
-    public function getEngine()
+    public function getTypes()
+    {
+        return explode(',', $this->dsn->types);
+    }
+
+    public function getScheme()
     {
         $adapter = $this->dsn->adapter;
 
@@ -32,7 +38,7 @@ class LogDsn extends Dsn
         return ucfirst($this->dsn->scheme);
     }
 
-    public function setEngine($value)
+    public function setScheme($value)
     {
         $this->dsn->scheme = lcfirst($value);
     }
