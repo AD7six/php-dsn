@@ -171,6 +171,10 @@ class Dsn
  */
     public function __get($key)
     {
+        if ($aliased = array_search($key, $this->keyMap)) {
+            $key = $aliased;
+        }
+
         $getter = 'get' . ucfirst($key);
         $val = $this->$getter();
         return $this->replace($val);

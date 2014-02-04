@@ -21,7 +21,7 @@ class DbDsn extends Dsn
         return $inst->toArray();
     }
 
-    public function getDatasource()
+    public function getEngine()
     {
         $adapter = $this->dsn->adapter;
 
@@ -31,7 +31,7 @@ class DbDsn extends Dsn
         return 'Database/' . ucfirst($this->dsn->engine);
     }
 
-    public function setDatasource($value)
+    public function setEngine($value)
     {
         $this->dsn->engine = str_replace('Database/', '', $value);
     }
