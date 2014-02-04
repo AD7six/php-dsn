@@ -8,12 +8,13 @@ use AD7six\Dsn\DbDsn;
  * MongodbDsn
  *
  */
-class MongodbDsn extends DbDsn {
+class MongodbDsn extends DbDsn
+{
 
 /**
- * _defaultPort
+ * defaultPort
  *
  * @var int 27017
  */
-	protected $_defaultPort = 27017;
+    protected $defaultPort = 27017;
 }

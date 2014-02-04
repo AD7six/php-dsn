@@ -8,12 +8,13 @@ use AD7six\Dsn\DbDsn;
  * MysqlDsn
  *
  */
-class MysqlDsn extends DbDsn {
+class MysqlDsn extends DbDsn
+{
 
 /**
- * _defaultPort
+ * defaultPort
  *
  * @var int 3306
  */
-	protected $_defaultPort = 3306;
+    protected $defaultPort = 3306;
 }

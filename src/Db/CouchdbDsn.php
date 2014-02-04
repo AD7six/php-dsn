@@ -8,12 +8,13 @@ use AD7six\Dsn\DbDsn;
  * CouchdbDsn
  *
  */
-class CouchdbDsn extends DbDsn {
+class CouchdbDsn extends DbDsn
+{
 
 /**
- * _defaultPort
+ * defaultPort
  *
  * @var int 5984
  */
-	protected $_defaultPort = 5984;
+    protected $defaultPort = 5984;
 }

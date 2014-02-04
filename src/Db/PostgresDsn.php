@@ -8,12 +8,13 @@ use AD7six\Dsn\DbDsn;
  * PostgresDsn
  *
  */
-class PostgresDsn extends DbDsn {
+class PostgresDsn extends DbDsn
+{
 
 /**
- * _defaultPort
+ * defaultPort
  *
  * @var int 5432
  */
-	protected $_defaultPort = 5432;
+    protected $defaultPort = 5432;
 }

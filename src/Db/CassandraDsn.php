@@ -8,12 +8,13 @@ use AD7six\Dsn\DbDsn;
  * CassandraDsn
  *
  */
-class CassandraDsn extends DbDsn {
+class CassandraDsn extends DbDsn
+{
 
 /**
- * _defaultPort
+ * defaultPort
  *
  * @var int 9160
  */
-	protected $_defaultPort = 9160;
+    protected $defaultPort = 9160;
 }

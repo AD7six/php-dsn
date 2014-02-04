@@ -14,11 +14,11 @@ class TestDsn extends Dsn {
 			$fakeReturn = true;
 			return 'getter value';
 		}
-		return $this->_url['special'];
+		return $this->url['special'];
 	}
 
 	public function setSpecial($val) {
-		$this->_url['special'] = strrev($val);
+		$this->url['special'] = strrev($val);
 	}
 }
 

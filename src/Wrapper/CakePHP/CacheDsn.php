@@ -4,46 +4,50 @@ namespace AD7six\Dsn\Wrapper\CakePHP;
 
 use AD7six\Dsn\Wrapper\Dsn;
 
-class CacheDsn extends Dsn {
+class CacheDsn extends Dsn
+{
 
-	protected $_defaultOptions = [
-		'keyMap' => [
-			'scheme' => 'engine',
-		],
-		'replacements' => [
-			'/CACHE/' => CACHE
-		]
-	];
+    protected $defaultOptions = [
+        'keyMap' => [
+            'scheme' => 'engine',
+        ],
+        'replacements' => [
+            '/CACHE/' => CACHE
+        ]
+    ];
 
-	public static function parse($url, $options = []) {
-		$inst = new CacheDsn($url, $options);
-		return $inst->toArray();
-	}
+    public static function parse($url, $options = [])
+    {
+        $inst = new CacheDsn($url, $options);
+        return $inst->toArray();
+    }
 
-	protected function _getDefaultOptions() {
-		if (!isset($this->_defaultOptions['replacements']['DURATION'])) {
-			$duration = \Configure::read('debug') ? '+10 seconds' : '+999 days';
-			$this->_defaultOptions['replacements']['DURATION'] = $duration;
-		}
+    protected function getDefaultOptions()
+    {
+        if (!isset($this->defaultOptions['replacements']['DURATION'])) {
+            $duration = \Configure::read('debug') ? '+10 seconds' : '+999 days';
+            $this->defaultOptions['replacements']['DURATION'] = $duration;
+        }
 
-		if (!isset($this->_defaultOptions['replacements']['APP_NAME'])) {
-			$this->_defaultOptions['replacements']['APP_NAME'] = env('APP_NAME');
-		}
+        if (!isset($this->defaultOptions['replacements']['APP_NAME'])) {
+            $this->defaultOptions['replacements']['APP_NAME'] = env('APP_NAME');
+        }
 
-		return $this->_defaultOptions;
-	}
+        return $this->defaultOptions;
+    }
 
-	public function getEngine() {
-		$adapter = $this->_dsn->adapter;
+    public function getEngine()
+    {
+        $adapter = $this->dsn->adapter;
 
-		if ($adapter) {
-			return $adapter;
-		}
-		return ucfirst($this->_dsn->scheme);
-	}
+        if ($adapter) {
+            return $adapter;
+        }
+        return ucfirst($this->dsn->scheme);
+    }
 
-	public function setEngine($value) {
-		$this->_dsn->scheme = lcfirst($value);
-	}
-
+    public function setEngine($value)
+    {
+        $this->dsn->scheme = lcfirst($value);
+    }
 }
