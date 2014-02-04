@@ -7,6 +7,8 @@ php:
 before_script:
   - composer self-update
   - composer install
+  - pear install --alldeps PHP_CodeSniffer
+  - phpenv rehash
 
 script:
   - phpunit --coverage-text --coverage-clover build/logs/clover.xml
