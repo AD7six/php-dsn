@@ -19,10 +19,18 @@ class Dsn
         'couch' => '\AD7six\Dsn\Db\CouchdbDsn',
         'couchdb' => '\AD7six\Dsn\Db\CouchdbDsn',
         'db' => '\AD7six\Dsn\DbDsn',
+        'maria' => '\AD7six\Dsn\Db\MysqlDsn',
+        'mariadb' => '\AD7six\Dsn\Db\MysqlDsn',
         'mongo' => '\AD7six\Dsn\Db\MongodbDsn',
+        'mongodb' => '\AD7six\Dsn\Db\MongodbDsn',
+        'mssql' => '\AD7six\Dsn\Db\SqlserverDsn',
         'mysql' => '\AD7six\Dsn\Db\MysqlDsn',
+        'pg' => '\AD7six\Dsn\Db\PostgresDsn',
+        'pgsql' => '\AD7six\Dsn\Db\PostgresDsn',
         'postgres' => '\AD7six\Dsn\Db\PostgresDsn',
         'sqlite' => '\AD7six\Dsn\Db\SqliteDsn',
+        'sqlite3' => '\AD7six\Dsn\Db\SqliteDsn',
+        'sqlserver' => '\AD7six\Dsn\Db\SqlserverDsn',
     ];
 
 /**
