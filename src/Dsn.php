@@ -16,6 +16,7 @@ class Dsn
  */
     protected static $schemeMap = [
         'cassandra' => '\AD7six\Dsn\Db\CassandraDsn',
+        'couch' => '\AD7six\Dsn\Db\CouchdbDsn',
         'couchdb' => '\AD7six\Dsn\Db\CouchdbDsn',
         'db' => '\AD7six\Dsn\DbDsn',
         'mongo' => '\AD7six\Dsn\Db\MongodbDsn',
