@@ -55,6 +55,10 @@ class EmailDsn extends Dsn
             return;
         }
 
+        if (strlen($return) > 1) {
+            return $return;
+        }
+
         return (bool) $return;
     }
 

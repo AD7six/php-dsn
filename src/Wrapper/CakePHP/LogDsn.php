@@ -23,9 +23,34 @@ class LogDsn extends Dsn
         return $inst->toArray();
     }
 
-    public function getTypes()
+    public function getGroups()
     {
-        return explode(',', $this->dsn->types);
+        $return = $this->dsn->groups;
+
+        if ($return === null) {
+            return;
+        }
+        return explode(',', $return);
+    }
+
+    public function getLock()
+    {
+        $return = $this->dsn->lock;
+
+        if ($return === null) {
+            return;
+        }
+        return (int) $return;
+    }
+
+    public function getProbability()
+    {
+        $return = $this->dsn->probability;
+
+        if ($return === null) {
+            return;
+        }
+        return (int) $return;
     }
 
     public function getScheme()
@@ -41,5 +66,25 @@ class LogDsn extends Dsn
     public function setScheme($value)
     {
         $this->dsn->scheme = lcfirst($value);
+    }
+
+    public function getSerialize()
+    {
+        $return = $this->dsn->serialize;
+
+        if ($return === null) {
+            return;
+        }
+        return (int) $return;
+    }
+
+    public function getTypes()
+    {
+        $return = $this->dsn->types;
+
+        if ($return === null) {
+            return;
+        }
+        return explode(',', $return);
     }
 }

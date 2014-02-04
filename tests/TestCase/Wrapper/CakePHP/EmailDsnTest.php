@@ -60,7 +60,7 @@ class EmailDsnTest extends PHPUnit_Framework_TestCase
                 ]
             ],
             [
-                'smtp://user:secret@localhost:25/?from=you@localhost&messageId=true&template=0&layout=0&timeout=30',
+                'smtp://user:secret@localhost:25/?from=you@localhost&messageId=1&template=0&layout=0&timeout=30',
                 [
                     'transport' => 'Smtp',
                     'host' => 'localhost',
