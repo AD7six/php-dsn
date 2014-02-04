@@ -69,7 +69,7 @@ class CacheDsn extends Dsn
         return $this->defaultOptions;
     }
 
-    public function getEngine()
+    public function getScheme()
     {
         $adapter = $this->dsn->adapter;
 
@@ -79,7 +79,7 @@ class CacheDsn extends Dsn
         return ucfirst($this->dsn->scheme);
     }
 
-    public function setEngine($value)
+    public function setScheme($value)
     {
         $this->dsn->scheme = lcfirst($value);
     }
