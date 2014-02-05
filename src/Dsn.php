@@ -25,6 +25,7 @@ class Dsn
         'mongodb' => '\AD7six\Dsn\Db\MongodbDsn',
         'mssql' => '\AD7six\Dsn\Db\SqlserverDsn',
         'mysql' => '\AD7six\Dsn\Db\MysqlDsn',
+        'oracle' => '\AD7six\Dsn\Db\OracleDsn',
         'pg' => '\AD7six\Dsn\Db\PostgresDsn',
         'pgsql' => '\AD7six\Dsn\Db\PostgresDsn',
         'postgres' => '\AD7six\Dsn\Db\PostgresDsn',
