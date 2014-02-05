@@ -63,4 +63,19 @@ class DbDsnTest extends PHPUnit_Framework_TestCase
             ]
         ];
     }
+
+    public function testGetEngineWithAdapter()
+    {
+        $dsn = new DbDsn('mysql+Plugin.DboClass://user:pass@host/database');
+        $expected = 'Plugin.DboClass';
+        $this->assertEquals($expected, $dsn->getEngine());
+
+        $dsn = new DbDsn('mysql+Plugin.Directory.DboClass://user:pass@host/database');
+        $expected = 'Plugin.Directory/DboClass';
+        $this->assertEquals($expected, $dsn->getEngine());
+
+        $dsn = new DbDsn('mysql+Plugin.Directory.SubDirectory.DboClass://user:pass@host/database');
+        $expected = 'Plugin.Directory/SubDirectory/DboClass';
+        $this->assertEquals($expected, $dsn->getEngine());
+    }
 }
