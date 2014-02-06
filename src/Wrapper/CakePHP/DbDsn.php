@@ -26,7 +26,7 @@ class DbDsn extends Dsn
         $adapter = $this->dsn->adapter;
 
         if ($adapter) {
-            return $adapter;
+            return preg_replace('/(?<=\.)(.*?)\./', '$1/', $adapter);
         }
         return 'Database/' . ucfirst($this->dsn->engine);
     }

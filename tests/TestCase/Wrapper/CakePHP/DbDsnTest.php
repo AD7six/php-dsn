@@ -96,6 +96,42 @@ class DbDsnTest extends PHPUnit_Framework_TestCase
                     'password' => 'password',
                     'database' => 'test_database_name',
                 ]
+            ],
+            [
+                'mysql+Plugin.DboClass://user:password@localhost/database_name',
+                [
+                    'datasource' => 'Plugin.DboClass',
+                    'adapter' => 'Plugin.DboClass',
+                    'host' => 'localhost',
+                    'port' => 3306,
+                    'login' => 'user',
+                    'password' => 'password',
+                    'database' => 'database_name'
+                ]
+            ],
+            [
+                'mysql+Plugin.Directory.DboClass://user:password@localhost/database_name',
+                [
+                    'datasource' => 'Plugin.Directory/DboClass',
+                    'adapter' => 'Plugin.Directory.DboClass',
+                    'host' => 'localhost',
+                    'port' => 3306,
+                    'login' => 'user',
+                    'password' => 'password',
+                    'database' => 'database_name'
+                ]
+            ],
+            [
+                'mysql+Plugin.Directory.SubDirectory.DboClass://user:password@localhost/database_name',
+                [
+                    'datasource' => 'Plugin.Directory/SubDirectory/DboClass',
+                    'adapter' => 'Plugin.Directory.SubDirectory.DboClass',
+                    'host' => 'localhost',
+                    'port' => 3306,
+                    'login' => 'user',
+                    'password' => 'password',
+                    'database' => 'database_name'
+                ]
             ]
         ];
 
