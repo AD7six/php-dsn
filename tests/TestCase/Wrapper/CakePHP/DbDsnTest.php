@@ -99,4 +99,41 @@ class DbDsnTest extends PHPUnit_Framework_TestCase
             ]
         ];
     }
+
+/**
+ * testPlugins
+ *
+ * @dataProvider pluginsProvider
+ * @return void
+ */
+    public function testPlugins($url, $expected)
+    {
+        $dsn = new DbDsn($url);
+
+        $return = $dsn->toArray();
+        $this->assertSame($expected, $return, 'The url should parse as expected');
+
+        $return = $dsn->__toString();
+        $this->assertSame($url, $return, 'The dsn should parse back to the same url');
+    }
+
+
+    public function pluginsProvider()
+    {
+        return [
+            [
+                'mongo+MongoDb.MongodbSource://user:password@localhost/test_database_name',
+                [
+                    'datasource' => 'MongoDb.MongodbSource',
+                    'adapter' => 'MongoDb.MongodbSource',
+                    'host' => 'localhost',
+                    'port' => 27017,
+                    'login' => 'user',
+                    'password' => 'password',
+                    'database' => 'test_database_name',
+                ]
+            ]
+        ];
+
+    }
 }
