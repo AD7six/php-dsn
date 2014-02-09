@@ -2,6 +2,7 @@
 
 namespace AD7six\Dsn\Test\TestCase\Wrapper\CakePHP;
 
+use \AD7six\Dsn\Dsn;
 use \AD7six\Dsn\Wrapper\CakePHP\DbDsn;
 use \PHPUnit_Framework_TestCase;
 
@@ -65,13 +66,26 @@ class DbDsnTest extends PHPUnit_Framework_TestCase
     }
 
 /**
- * testPlugins
+ * testMapUsage
  *
- * @dataProvider pluginsProvider
+ * Map custom schemes in the dsn class to mysql for the default port (convenience only)
+ * Map custom schemes in the wrapper class to a custom datasources
+ *
+ * @dataProvider mapUsageProvider
  * @return void
  */
-    public function testPlugins($url, $expected)
+    public function testMapUsage($url, $expected)
     {
+        Dsn::map([
+            'nysql' => '\AD7six\Dsn\Db\MysqlDsn',
+            'oysql' => '\AD7six\Dsn\Db\MysqlDsn',
+        ]);
+        DbDsn::map([
+            'mongo' => 'MongoDb.MongodbSource',
+            'mysql' => 'Plugin.DboClass',
+            'nysql' => 'Plugin.Directory/DboClass',
+            'oysql' => 'Plugin.Directory/SubDirectory/DboClass',
+        ]);
         $dsn = new DbDsn($url);
 
         $return = $dsn->toArray();
@@ -82,11 +96,11 @@ class DbDsnTest extends PHPUnit_Framework_TestCase
     }
 
 
-    public function pluginsProvider()
+    public function mapUsageProvider()
     {
         return [
             [
-                'mongo+MongoDb.MongodbSource://user:password@localhost/test_database_name',
+                'mongo://user:password@localhost/test_database_name',
                 [
                     'datasource' => 'MongoDb.MongodbSource',
                     'host' => 'localhost',
@@ -95,8 +109,40 @@ class DbDsnTest extends PHPUnit_Framework_TestCase
                     'password' => 'password',
                     'database' => 'test_database_name',
                 ]
+            ],
+            [
+                'mysql://user:password@localhost/database_name',
+                [
+                    'datasource' => 'Plugin.DboClass',
+                    'host' => 'localhost',
+                    'port' => 3306,
+                    'login' => 'user',
+                    'password' => 'password',
+                    'database' => 'database_name'
+                ]
+            ],
+            [
+                'nysql://user:password@localhost/database_name',
+                [
+                    'datasource' => 'Plugin.Directory/DboClass',
+                    'host' => 'localhost',
+                    'port' => 3306,
+                    'login' => 'user',
+                    'password' => 'password',
+                    'database' => 'database_name'
+                ]
+            ],
+            [
+                'oysql://user:password@localhost/database_name',
+                [
+                    'datasource' => 'Plugin.Directory/SubDirectory/DboClass',
+                    'host' => 'localhost',
+                    'port' => 3306,
+                    'login' => 'user',
+                    'password' => 'password',
+                    'database' => 'database_name'
+                ]
             ]
         ];
-
     }
 }
