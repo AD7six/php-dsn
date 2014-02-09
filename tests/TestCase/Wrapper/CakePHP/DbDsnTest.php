@@ -89,7 +89,6 @@ class DbDsnTest extends PHPUnit_Framework_TestCase
                 'mongo+MongoDb.MongodbSource://user:password@localhost/test_database_name',
                 [
                     'datasource' => 'MongoDb.MongodbSource',
-                    'adapter' => 'MongoDb.MongodbSource',
                     'host' => 'localhost',
                     'port' => 27017,
                     'login' => 'user',

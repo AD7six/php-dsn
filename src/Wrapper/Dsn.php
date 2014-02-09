@@ -162,13 +162,15 @@ class Dsn
         foreach ($allKeys as $key) {
             if (isset($this->keyMap[$key])) {
                 $key = $this->keyMap[$key];
+                if (!$key) {
+                    continue;
+                }
             }
 
             $val = $this->$key;
             if ($val !== null) {
                 $return[$key] = $val;
             }
-
         }
 
         return $return;
