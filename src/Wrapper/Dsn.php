@@ -8,6 +8,13 @@ class Dsn
 {
 
 /**
+ * Array of scheme => adapters
+ *
+ * @var array
+ */
+    protected static $adapterMap = [];
+
+/**
  * defaultOptions
  *
  * @var array
@@ -38,6 +45,51 @@ class Dsn
  * @var array
  */
     protected $replacements = [];
+
+/**
+ * Read or change the adapter map
+ *
+ * For example:
+ *
+ * $true = Dsn::map('foo', 'UseThisAdapter');
+ * $dsn = Dsn::parse('foo://....');
+ * $dsn->adapter === 'UseThisAdapter';
+ *
+ * $array = ['this' => 'That\Class', 'other' => 'Other\Class', ...];
+ * $fullMap = Dsn::map($array);
+ * $dsn = Dsn::parse('this://....');
+ * $dsn->adapter === 'That\Class';
+ * $dsn = Dsn::parse('other://....');
+ * $dsn->adapter === 'Other\Class';
+ *
+ * @param mixed $adapter
+ * @param string $class
+ * @return mixed
+ */
+    public static function map($scheme = null, $adapter = null)
+    {
+        if (is_array($scheme)) {
+            foreach ($scheme as $s => $adapter) {
+                static::map($s, $adapter);
+            }
+            return static::$adapterMap;
+        }
+
+        if ($scheme === null) {
+            return static::$adapterMap;
+        }
+
+        if ($adapter === null) {
+            return isset(static::$adapterMap[$scheme]) ? static::$adapterMap[$scheme] : null;
+        }
+
+        if ($adapter === false) {
+            unset($adapterMap[$scheme]);
+            return;
+        }
+
+        return static::$adapterMap[$scheme] = $adapter;
+    }
 
     public static function parse($url, $options = [])
     {
@@ -79,6 +131,23 @@ class Dsn
         return $options;
     }
 
+    public function getAdapter()
+    {
+        $adapter = $this->dsn->adapter;
+
+        if ($adapter !== null) {
+            return $adapter;
+        }
+
+        $scheme = $this->dsn->scheme;
+
+        if (isset(static::$adapterMap[$scheme])) {
+            return static::$adapterMap[$scheme];
+        }
+
+        return null;
+    }
+
     public function getDsn()
     {
         return $this->dsn;
@@ -87,7 +156,7 @@ class Dsn
     public function toArray()
     {
         $raw = $this->dsn->toArray();
-        $allKeys = array_keys($raw);
+        $allKeys = array_merge(array_keys($raw), ['adapter']);
         $return = [];
 
         foreach ($allKeys as $key) {
@@ -146,6 +215,10 @@ class Dsn
  */
     protected function replace($data, $replacements = null)
     {
+        if (!$data) {
+            return $data;
+        }
+
         if (!$replacements) {
             $replacements = $this->replacements;
             if (!$replacements) {

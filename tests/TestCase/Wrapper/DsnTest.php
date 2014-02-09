@@ -33,4 +33,35 @@ class DsnTest extends PHPUnit_Framework_TestCase
         $dsn->scheme = 'foo';
         $this->assertSame('foo://host/path', $dsn->toUrl());
     }
+
+    public function testAdapterMap()
+    {
+        Dsn::map('service', 'UseThisAdapter');
+        $expected = [
+            'service' => 'UseThisAdapter'
+        ];
+        $return = Dsn::map();
+        $this->assertSame($expected, $return);
+
+        $url = 'service://host/path';
+        $dsn = new Dsn($url);
+        $this->assertInstanceOf('AD7six\Dsn\Wrapper\Dsn', $dsn);
+
+        $this->assertSame('service', $dsn->scheme);
+        $this->assertSame('service', $dsn->getScheme());
+
+        $this->assertSame('UseThisAdapter', $dsn->adapter);
+        $this->assertSame('UseThisAdapter', $dsn->getAdapter());
+
+        $expected = [
+            'scheme' => 'service',
+            'host' => 'host',
+            'path' => '/path',
+            'adapter' => 'UseThisAdapter',
+        ];
+        $return = $dsn->toArray();
+        $this->assertSame($expected, $return);
+
+        $this->assertSame($url, $dsn->toUrl());
+    }
 }
