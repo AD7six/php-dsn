@@ -15,4 +15,3 @@ if ($vendorPos !== false) {
     // Package itself (cloned standalone)
     $loader = require __DIR__.'/../vendor/autoload.php';
 }
-$loader->add('AD7six\\Dsn\\Test\\', __DIR__);
