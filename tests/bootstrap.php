@@ -6,7 +6,7 @@ date_default_timezone_set('UTC');
  * Path trickery ensures test suite will always run, standalone or within
  * another composer package. Designed to find composer autoloader and require
  */
-$vendorPos = strpos(__DIR__, 'vendor/AD7six/dsn');
+$vendorPos = strpos(__DIR__, 'vendor/ad7six/dsn');
 if ($vendorPos !== false) {
     // Package has been cloned within another composer package, resolve path to autoloader
     $vendorDir = substr(__DIR__, 0, $vendorPos) . 'vendor/';
