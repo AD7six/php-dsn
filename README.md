@@ -12,7 +12,7 @@ The main dsn class implements a parse function which returns a dsn instance:
     use \AD7six\Dsn\Dsn;
 
     $url = $_ENV['SOME_SERVICE_URL'];
-    $dsn = Dsn::parse($serviceUrl);
+    $dsn = Dsn::parse($url);
 
 The class of the returned object is dependent upon the scheme of the service url, for example:
 
