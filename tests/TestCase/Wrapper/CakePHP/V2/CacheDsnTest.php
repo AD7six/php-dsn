@@ -1,8 +1,8 @@
 <?php
 
-namespace AD7six\Dsn\Test\TestCase\Wrapper\CakePHP;
+namespace AD7six\Dsn\Test\TestCase\Wrapper\CakePHP\V2;
 
-use \AD7six\Dsn\Wrapper\CakePHP\CacheDsn;
+use \AD7six\Dsn\Wrapper\CakePHP\V2\CacheDsn;
 use \PHPUnit_Framework_TestCase;
 
 /**

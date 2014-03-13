@@ -1,6 +1,6 @@
 <?php
 
-namespace AD7six\Dsn\Wrapper\CakePHP;
+namespace AD7six\Dsn\Wrapper\CakePHP\V2;
 
 use AD7six\Dsn\Wrapper\Dsn;
 
