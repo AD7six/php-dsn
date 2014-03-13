@@ -34,11 +34,12 @@ class LogDsn extends Dsn
  */
     public function getEngine()
     {
-        $adapter = $this->dsn->adapter;
+        $adapter = $this->getAdapter();
 
         if ($adapter) {
             return $adapter;
         }
+
         return ucfirst($this->dsn->scheme);
     }
 

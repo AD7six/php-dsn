@@ -52,17 +52,13 @@ class DbDsn extends Dsn
  */
     public function getDatasource()
     {
-        $adapter = $this->dsn->adapter;
+        $adapter = $this->getAdapter();
 
         if ($adapter) {
             return $adapter;
         }
 
         $engine = $this->dsn->engine;
-
-        if (isset(static::$adapterMap[$engine])) {
-            return static::$adapterMap[$engine];
-        }
 
         return 'Database/' . ucfirst($engine);
     }

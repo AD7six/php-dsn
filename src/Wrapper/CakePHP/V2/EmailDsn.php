@@ -133,11 +133,12 @@ class EmailDsn extends Dsn
  */
     public function getTransport()
     {
-        $adapter = $this->dsn->adapter;
+        $adapter = $this->getAdapter();
 
         if ($adapter) {
             return $adapter;
         }
+
         return ucfirst($this->dsn->scheme);
     }
 
