@@ -278,6 +278,9 @@ class Dsn
             $key = lcfirst(substr($method, 3));
 
             if ($aliased = array_search($key, $this->keyMap)) {
+                if (!$aliased) {
+                    return null;
+                }
                 $method = $getSet . ucfirst($aliased);
             }
         }

@@ -21,6 +21,7 @@ class EmailDsn extends Dsn
             'scheme' => 'className',
             'user' => 'username',
             'pass' => 'password',
+            'path' => false
         ]
     ];
 
@@ -88,18 +89,6 @@ class EmailDsn extends Dsn
         }
 
         return $return;
-    }
-
-/**
- * getPath
- *
- * No email transport requires a path - so never return it
- *
- * @return void
- */
-    public function getPath()
-    {
-        return null;
     }
 
 /**
