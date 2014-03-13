@@ -4,6 +4,10 @@ namespace AD7six\Dsn\Wrapper\CakePHP\V3;
 
 use AD7six\Dsn\Wrapper\Dsn;
 
+/**
+ * DbDsn
+ *
+ */
 class DbDsn extends Dsn
 {
 
@@ -39,11 +43,6 @@ class DbDsn extends Dsn
         ]
     ];
 
-    public static function parse($url, $options = [])
-    {
-        $inst = new DbDsn($url, $options);
-        return $inst->toArray();
-    }
 
 /**
  * getClassName
@@ -63,6 +62,19 @@ class DbDsn extends Dsn
         $engine = $this->dsn->engine;
 
         return 'Cake\Database\Driver\\' . ucfirst($engine);
+    }
+
+/**
+ * parse a url as a database dsn
+ *
+ * @param string $url
+ * @param array $options
+ * @return array
+ */
+    public static function parse($url, $options = [])
+    {
+        $inst = new DbDsn($url, $options);
+        return $inst->toArray();
     }
 
 }

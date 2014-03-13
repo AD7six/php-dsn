@@ -4,9 +4,18 @@ namespace AD7six\Dsn\Wrapper\CakePHP\V3;
 
 use AD7six\Dsn\Wrapper\Dsn;
 
+/**
+ * LogDsn
+ *
+ */
 class LogDsn extends Dsn
 {
 
+/**
+ * defaultOptions
+ *
+ * @var array
+ */
     protected $defaultOptions = [
         'keyMap' => [
             'scheme' => 'className'
@@ -16,43 +25,13 @@ class LogDsn extends Dsn
         ]
     ];
 
-    public static function parse($url, $options = [])
-    {
-        $inst = new LogDsn($url, $options);
-
-        return $inst->toArray();
-    }
-
-    public function getGroups()
-    {
-        $return = $this->dsn->groups;
-
-        if ($return === null) {
-            return;
-        }
-        return explode(',', $return);
-    }
-
-    public function getLock()
-    {
-        $return = $this->dsn->lock;
-
-        if ($return === null) {
-            return;
-        }
-        return (int) $return;
-    }
-
-    public function getProbability()
-    {
-        $return = $this->dsn->probability;
-
-        if ($return === null) {
-            return;
-        }
-        return (int) $return;
-    }
-
+/**
+ * getClassName
+ *
+ * Return the adapter if there is one, else return the scheme
+ *
+ * @return string
+ */
     public function getClassName()
     {
         $adapter = $this->getAdapter();
@@ -66,16 +45,13 @@ class LogDsn extends Dsn
         return 'Cake\Log\Engine\\' . ucfirst($scheme) . 'Log';
     }
 
-    public function getSerialize()
-    {
-        $return = $this->dsn->serialize;
-
-        if ($return === null) {
-            return;
-        }
-        return (int) $return;
-    }
-
+/**
+ * getLevels
+ *
+ * If it's defined, return as an array
+ *
+ * @return array
+ */
     public function getLevels()
     {
         $return = $this->dsn->levels;
@@ -85,4 +61,49 @@ class LogDsn extends Dsn
         }
         return explode(',', $return);
     }
+
+/**
+ * getProbability
+ *
+ * @return int
+ */
+    public function getProbability()
+    {
+        $return = $this->dsn->probability;
+
+        if ($return === null) {
+            return;
+        }
+        return (int) $return;
+    }
+
+/**
+ * getSerialize
+ *
+ * @return bool
+ */
+    public function getSerialize()
+    {
+        $return = $this->dsn->serialize;
+
+        if ($return === null) {
+            return;
+        }
+        return (bool) $return;
+    }
+
+/**
+ * parse a url as a log dsn
+ *
+ * @param string $url
+ * @param array $options
+ * @return array
+ */
+    public static function parse($url, $options = [])
+    {
+        $inst = new LogDsn($url, $options);
+
+        return $inst->toArray();
+    }
+
 }

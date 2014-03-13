@@ -4,9 +4,18 @@ namespace AD7six\Dsn\Wrapper\CakePHP\V3;
 
 use AD7six\Dsn\Wrapper\Dsn;
 
+/**
+ * EmailDsn
+ *
+ */
 class EmailDsn extends Dsn
 {
 
+/**
+ * defaultOptions
+ *
+ * @var array
+ */
     protected $defaultOptions = [
         'keyMap' => [
             'scheme' => 'className',
@@ -15,28 +24,13 @@ class EmailDsn extends Dsn
         ]
     ];
 
-    public static function parse($url, $options = [])
-    {
-        $inst = new EmailDsn($url, $options);
-        return $inst->toArray();
-    }
-
-    public function getPath()
-    {
-        return null;
-    }
-
-    public function getTimeout()
-    {
-        $timeout = $this->dsn->timeout;
-
-        if ($timeout === null) {
-            return;
-        }
-
-        return (int) $timeout;
-    }
-
+/**
+ * getClassName
+ *
+ * Return the adapter if there is one, else return the scheme
+ *
+ * @return string
+ */
     public function getClassName()
     {
         $adapter = $this->getAdapter();
@@ -48,21 +42,73 @@ class EmailDsn extends Dsn
         return ucfirst($this->dsn->scheme);
     }
 
-    public function getMessageId()
+/**
+ * getLayout
+ *
+ * Return the layout, if defined, as either a string or bool as appropriate
+ *
+ * @return mixed
+ */
+    public function getLayout()
     {
-        $return = $this->dsn->messageId;
+       $return = $this->dsn->layout;
 
         if ($return === null) {
             return;
         }
 
-        if (strlen($return) > 1) {
-            return $return;
+        if (!$return) {
+            return false;
         }
 
-        return (bool) $return;
+        return $return;
     }
 
+ /**
+ * getMessageId
+ *
+ * Return the message id, if defined, as either a string or bool as appropriate
+ *
+ * @return mixed
+ */
+    public function getMessageId()
+    {
+       $return = $this->dsn->messageId;
+
+        if ($return === null) {
+            return;
+        }
+
+        if ($return === '1') {
+            return true;
+        }
+
+        if ($return === '0') {
+            return false;
+        }
+
+        return $return;
+    }
+
+/**
+ * getPath
+ *
+ * No email transport requires a path - so never return it
+ *
+ * @return void
+ */
+    public function getPath()
+    {
+        return null;
+    }
+
+/**
+ * getTemplate
+ *
+ * Return the template, if defined, as either a string or bool as appropriate
+ *
+ * @return mixed
+ */
     public function getTemplate()
     {
         $return = $this->dsn->template;
@@ -71,18 +117,40 @@ class EmailDsn extends Dsn
             return;
         }
 
-        return (bool) $return;
+        if (!$return) {
+            return false;
+        }
+
+        return $return;
     }
 
-    public function getLayout()
+/**
+ * getTimeout
+ *
+ * If specified, return the timeout as an integer
+ *
+ * @return int
+ */
+    public function getTimeout()
     {
-        $return = $this->dsn->layout;
+        $timeout = $this->dsn->timeout;
 
-        if ($return === null) {
+        if ($timeout === null) {
             return;
         }
 
-        return (bool) $return;
+        return (int) $timeout;
     }
-
+/**
+ * parse a url as an email dsn
+ *
+ * @param string $url
+ * @param array $options
+ * @return array
+ */
+   public static function parse($url, $options = [])
+   {
+        $inst = new EmailDsn($url, $options);
+        return $inst->toArray();
+    }
 }
