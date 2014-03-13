@@ -79,11 +79,6 @@ class CacheDsn extends Dsn
         return ucfirst($this->dsn->scheme);
     }
 
-    public function setClassName($value)
-    {
-        $this->dsn->scheme = lcfirst($value);
-    }
-
     public function getSerialize()
     {
         return (bool) $this->dsn->serialize;

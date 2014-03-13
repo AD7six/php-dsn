@@ -84,8 +84,4 @@ class EmailDsn extends Dsn
         return (bool) $return;
     }
 
-    public function setTransport($value)
-    {
-        $this->dsn->scheme = lcfirst($value);
-    }
 }

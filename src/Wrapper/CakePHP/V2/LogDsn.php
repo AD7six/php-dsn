@@ -63,11 +63,6 @@ class LogDsn extends Dsn
         return ucfirst($this->dsn->scheme);
     }
 
-    public function setEngine($value)
-    {
-        $this->dsn->scheme = lcfirst($value);
-    }
-
     public function getSerialize()
     {
         $return = $this->dsn->serialize;

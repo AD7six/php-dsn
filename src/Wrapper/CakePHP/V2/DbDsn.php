@@ -69,8 +69,4 @@ class DbDsn extends Dsn
         return 'Database/' . ucfirst($engine);
     }
 
-    public function setDatasource($value)
-    {
-        $this->dsn->engine = str_replace('Database/', '', $value);
-    }
 }

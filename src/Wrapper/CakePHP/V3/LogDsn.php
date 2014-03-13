@@ -66,11 +66,6 @@ class LogDsn extends Dsn
         return 'Cake\Log\Engine\\' . ucfirst($scheme) . 'Log';
     }
 
-    public function setClassName($value)
-    {
-        $this->dsn->scheme = lcfirst($value);
-    }
-
     public function getSerialize()
     {
         $return = $this->dsn->serialize;

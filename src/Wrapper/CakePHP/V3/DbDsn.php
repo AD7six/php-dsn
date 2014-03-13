@@ -69,8 +69,4 @@ class DbDsn extends Dsn
         return 'Cake\Database\Driver\\' . ucfirst($engine);
     }
 
-    public function setClassName($value)
-    {
-        $this->dsn->engine = str_replace('Cake\Database\Driver\\', '', $value);
-    }
 }
