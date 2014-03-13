@@ -204,7 +204,7 @@ class Dsn
         $this->url = [];
 
         $url = parse_url($string);
-        if (!$url || array_keys($url) === ['path']) {
+        if (!$url || !isset($url['scheme'])) {
             throw new \Exception(sprintf('The url \'%s\' could not be parsed', $string));
         }
 
