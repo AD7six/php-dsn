@@ -217,7 +217,7 @@ class Dsn
  */
     protected function replace($data, $replacements = null)
     {
-        if (!$data) {
+        if (!is_string($data)) {
             return $data;
         }
 
