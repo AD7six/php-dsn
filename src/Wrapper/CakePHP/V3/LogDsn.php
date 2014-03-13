@@ -53,7 +53,7 @@ class LogDsn extends Dsn
         return (int) $return;
     }
 
-    public function getScheme()
+    public function getClassName()
     {
         $adapter = $this->dsn->adapter;
 
@@ -66,7 +66,7 @@ class LogDsn extends Dsn
         return 'Cake\Log\Engine\\' . ucfirst($scheme) . 'Log';
     }
 
-    public function setScheme($value)
+    public function setClassName($value)
     {
         $this->dsn->scheme = lcfirst($value);
     }

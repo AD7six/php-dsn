@@ -37,7 +37,7 @@ class EmailDsn extends Dsn
         return (int) $timeout;
     }
 
-    public function getScheme()
+    public function getTransport()
     {
         $adapter = $this->dsn->adapter;
 
@@ -84,8 +84,7 @@ class EmailDsn extends Dsn
         return (bool) $return;
     }
 
-
-    public function setScheme($value)
+    public function setTransport($value)
     {
         $this->dsn->scheme = lcfirst($value);
     }

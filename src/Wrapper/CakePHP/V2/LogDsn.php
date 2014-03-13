@@ -53,7 +53,7 @@ class LogDsn extends Dsn
         return (int) $return;
     }
 
-    public function getScheme()
+    public function getEngine()
     {
         $adapter = $this->dsn->adapter;
 
@@ -63,7 +63,7 @@ class LogDsn extends Dsn
         return ucfirst($this->dsn->scheme);
     }
 
-    public function setScheme($value)
+    public function setEngine($value)
     {
         $this->dsn->scheme = lcfirst($value);
     }

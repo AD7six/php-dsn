@@ -46,13 +46,13 @@ class DbDsn extends Dsn
     }
 
 /**
- * getEngine
+ * getDatasource
  *
  * Get the engine to use for this dsn. Defaults to `Database/Enginename`
  *
  * @return string
  */
-    public function getEngine()
+    public function getDatasource()
     {
         $adapter = $this->dsn->adapter;
 
@@ -69,7 +69,7 @@ class DbDsn extends Dsn
         return 'Database/' . ucfirst($engine);
     }
 
-    public function setEngine($value)
+    public function setDatasource($value)
     {
         $this->dsn->engine = str_replace('Database/', '', $value);
     }

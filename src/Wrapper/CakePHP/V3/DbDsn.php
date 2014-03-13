@@ -46,13 +46,13 @@ class DbDsn extends Dsn
     }
 
 /**
- * getEngine
+ * getClassName
  *
  * Get the engine to use for this dsn. Defaults to `Cake\Database\Driver\Enginename`
  *
  * @return string
  */
-    public function getEngine()
+    public function getClassName()
     {
         $adapter = $this->dsn->adapter;
 
@@ -69,7 +69,7 @@ class DbDsn extends Dsn
         return 'Cake\Database\Driver\\' . ucfirst($engine);
     }
 
-    public function setEngine($value)
+    public function setClassName($value)
     {
         $this->dsn->engine = str_replace('Cake\Database\Driver\\', '', $value);
     }

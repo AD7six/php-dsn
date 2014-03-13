@@ -246,10 +246,6 @@ class Dsn
  */
     public function __get($key)
     {
-        if ($aliased = array_search($key, $this->keyMap)) {
-            $key = $aliased;
-        }
-
         $getter = 'get' . ucfirst($key);
         $val = $this->$getter();
         return $this->replace($val);
@@ -277,6 +273,15 @@ class Dsn
  */
     public function __call($method, $args)
     {
+        $getSet = substr($method, 0, 3);
+        if ($getSet === 'get' || $getSet === 'set') {
+            $key = lcfirst(substr($method, 3));
+
+            if ($aliased = array_search($key, $this->keyMap)) {
+                $method = $getSet . ucfirst($aliased);
+            }
+        }
+
         return call_user_func_array([$this->dsn, $method], $args);
     }
 }
