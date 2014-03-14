@@ -28,6 +28,15 @@ class DbDsn extends Dsn
     ];
 
 /**
+ * Mandatory keys
+ *
+ * className must be in responses
+ */
+    protected static $mandatoryKeys = [
+        'className'
+    ];
+
+/**
  * The keymap for CakePHP db dsns.
  *
  * Adapter is false because it's not required in the resultant array
@@ -36,22 +45,31 @@ class DbDsn extends Dsn
  */
     protected $defaultOptions = [
         'keyMap' => [
-            'engine' => 'className',
+            'engine' => 'driver',
             'adapter' => false,
             'user' => 'login',
             'pass' => 'password'
         ]
     ];
 
-
 /**
  * getClassName
+ *
+ * @return string
+ */
+    public function getClassName()
+    {
+        return $this->dsn->className ?: 'Cake\Database\Connection';
+    }
+
+/**
+ * getDriver
  *
  * Get the engine to use for this dsn. Defaults to `Cake\Database\Driver\Enginename`
  *
  * @return string
  */
-    public function getClassName()
+    public function getDriver()
     {
         $adapter = $this->getAdapter();
 

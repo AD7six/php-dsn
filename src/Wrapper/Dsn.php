@@ -15,6 +15,13 @@ class Dsn
     protected static $adapterMap = [];
 
 /**
+ * Array of keys which must be present when parsed as an array
+ *
+ * @var array
+ */
+    protected static $mandatoryKeys = [];
+
+/**
  * defaultOptions
  *
  * @var array
@@ -156,7 +163,7 @@ class Dsn
     public function toArray()
     {
         $raw = $this->dsn->toArray();
-        $allKeys = array_merge(array_keys($raw), ['adapter']);
+        $allKeys = array_unique(array_merge(static::$mandatoryKeys, array_keys($raw)));
         $return = [];
 
         foreach ($allKeys as $key) {
