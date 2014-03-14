@@ -19,7 +19,9 @@ class Dsn
  *
  * @var array
  */
-    protected static $mandatoryKeys = [];
+    protected static $mandatoryKeys = [
+        'adapter'
+    ];
 
 /**
  * defaultOptions

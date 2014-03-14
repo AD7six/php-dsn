@@ -54,10 +54,10 @@ class DsnTest extends PHPUnit_Framework_TestCase
         $this->assertSame('UseThisAdapter', $dsn->getAdapter());
 
         $expected = [
+            'adapter' => 'UseThisAdapter',
             'scheme' => 'service',
             'host' => 'host',
             'path' => '/path',
-            'adapter' => 'UseThisAdapter',
         ];
         $return = $dsn->toArray();
         $this->assertSame($expected, $return);

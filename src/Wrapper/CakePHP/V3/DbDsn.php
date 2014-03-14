@@ -46,7 +46,6 @@ class DbDsn extends Dsn
     protected $defaultOptions = [
         'keyMap' => [
             'engine' => 'driver',
-            'adapter' => false,
             'user' => 'login',
             'pass' => 'password'
         ]
