@@ -4,6 +4,11 @@ namespace AD7six\Dsn\Wrapper;
 
 use AD7six\Dsn\Dsn as DsnInstance;
 
+/**
+ * Wrapper Dsn
+ *
+ * A wrapper allows modification of the simple/dumb dsn instance
+ */
 class Dsn
 {
 
@@ -120,11 +125,30 @@ class Dsn
         return static::$adapterMap[$scheme] = $adapter;
     }
 
+/**
+ * parse
+ *
+ * Return a new wrapper-dsn instance
+ *
+ * @param mixed $url
+ * @param mixed $options
+ * @return void
+ */
     public static function parse($url, $options = [])
     {
         return new Dsn($url, $options);
     }
 
+/**
+ * __construct
+ *
+ * Create and assign the raw dsn instance, merge default options
+ * and then set keyMap and replacements properties from passed options
+ *
+ * @param string $url
+ * @param array $options
+ * @return void
+ */
     public function __construct($url = '', $options = [])
     {
         $this->dsn = DsnInstance::parse($url);
@@ -132,7 +156,7 @@ class Dsn
         $options = $this->mergeDefaultOptions($options);
         $opts = [
             'keyMap',
-            'replacements',
+            'replacements'
         ];
         foreach ($opts as $key) {
             if (!empty($options[$key])) {
@@ -141,6 +165,13 @@ class Dsn
         }
     }
 
+/**
+ * getDefaultOptions
+ *
+ * Return default values including any dynamically added values
+ *
+ * @return array
+ */
     protected function getDefaultOptions()
     {
         if (!isset($this->defaultOptions['replacements']['APP_NAME'])) {
@@ -150,6 +181,14 @@ class Dsn
         return $this->defaultOptions;
     }
 
+/**
+ * mergeDefaultOptions
+ *
+ * Take the default options, merge individual array values
+ *
+ * @param array $options
+ * @return array
+ */
     protected function mergeDefaultOptions($options = [])
     {
         $defaults = $this->getDefaultOptions();
@@ -164,6 +203,14 @@ class Dsn
         return $options;
     }
 
+/**
+ * getAdapter
+ *
+ * If the dsn specifies an adatper, it is returned unmodified
+ * If there is an adapter defined via the adapter map - return that
+ *
+ * @return string
+ */
     public function getAdapter()
     {
         $adapter = $this->dsn->adapter;
@@ -181,11 +228,21 @@ class Dsn
         return null;
     }
 
+/**
+ * Return the real dsn object
+ *
+ * @return \AD7six\Dsn\Dsn
+ */
     public function getDsn()
     {
         return $this->dsn;
     }
 
+/**
+ * Return the array representation of this dsn
+ *
+ * @return array
+ */
     public function toArray()
     {
         $raw = $this->dsn->toArray();
@@ -242,15 +299,18 @@ class Dsn
     }
 
 /**
- * Recursively perform string replacements on array values
+ * perform string replacements on a string
+ *
+ * Accepts an array, recusively replacing string values
+ * Does nothing to any scalar that's not string
  *
  * @param array $data
  * @param array $replacements
- * @return array
+ * @return mixed
  */
     protected function replace($data, $replacements = null)
     {
-        if (!is_string($data)) {
+        if (!is_array($data) && !is_string($data)) {
             return $data;
         }
 
