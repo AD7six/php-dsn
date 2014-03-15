@@ -53,9 +53,27 @@ class Dsn
  *
  * @var array
  */
-    protected $replacements = [
-        'APP_NAME' => APP_NAME
-    ];
+    protected $replacements = [];
+
+/**
+ * Get an environment variable
+ *
+ * Query $_SERVER, $_ENV and getenv() in that order
+ *
+ * @param string $key
+ * @return mixed
+ */
+    public function env($key = null)
+    {
+        if (isset($_SERVER[$key])) {
+            return $_SERVER[$key];
+        } elseif (isset($_ENV[$key])) {
+            return $_ENV[$key];
+        } elseif (getenv($key) !== false) {
+            return getenv($key);
+        }
+        return null;
+    }
 
 /**
  * Read or change the adapter map
@@ -125,6 +143,10 @@ class Dsn
 
     protected function getDefaultOptions()
     {
+        if (!isset($this->defaultOptions['replacements']['APP_NAME'])) {
+            $this->defaultOptions['replacements']['APP_NAME'] = $this->env('APP_NAME');
+        }
+
         return $this->defaultOptions;
     }
 
@@ -233,7 +255,7 @@ class Dsn
         }
 
         if (!$replacements) {
-            $replacements = $this->replacements;
+            $replacements = $this->replacements();
             if (!$replacements) {
                 return $data;
             }

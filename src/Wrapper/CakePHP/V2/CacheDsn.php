@@ -21,7 +21,6 @@ class CacheDsn extends Dsn
             'scheme' => 'engine',
         ],
         'replacements' => [
-            'APP_NAME' => APP_NAME,
             '/CACHE/' => CACHE
         ]
     ];
@@ -58,47 +57,19 @@ class CacheDsn extends Dsn
     }
 
 /**
- * Get an environment variable
- *
- * If the env function is defined use it, else query $_SERVER, $_ENV and getenv() in that order
- *
- * @param string $key
- * @return mixed
- */
-    public function env($key = null)
-    {
-        if (function_exists('env')) {
-            return env($key);
-        }
-
-        if (isset($_SERVER[$key])) {
-            return $_SERVER[$key];
-        } elseif (isset($_ENV[$key])) {
-            return $_ENV[$key];
-        } elseif (getenv($key) !== false) {
-            return getenv($key);
-        }
-
-        return null;
-    }
-
-/**
  * getDefaultOptions
  *
  * Add a replacement for DURATION, conditionally set depending on debug,
- * and a replacement for APP_NAME, which is used as a prefix
  *
  * @return array
  */
     protected function getDefaultOptions()
     {
+        parent::getDefaultOptions();
+
         if (!isset($this->defaultOptions['replacements']['DURATION'])) {
             $duration = $this->debug() ? '+10 seconds' : '+999 days';
             $this->defaultOptions['replacements']['DURATION'] = $duration;
-        }
-
-        if (!isset($this->defaultOptions['replacements']['APP_NAME'])) {
-            $this->defaultOptions['replacements']['APP_NAME'] = $this->env('APP_NAME');
         }
 
         return $this->defaultOptions;

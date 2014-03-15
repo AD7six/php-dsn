@@ -2,10 +2,6 @@
 error_reporting(-1);
 date_default_timezone_set('UTC');
 
-if (!defined('APP_NAME')) {
-    define('APP_NAME', 'test_app');
-}
-
 /**
  * Path trickery ensures test suite will always run, standalone or within
  * another composer package. Designed to find composer autoloader and require
