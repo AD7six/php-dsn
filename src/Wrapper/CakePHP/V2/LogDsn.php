@@ -21,6 +21,7 @@ class LogDsn extends Dsn
             'scheme' => 'engine'
         ],
         'replacements' => [
+            'APP_NAME' => APP_NAME,
             '/LOGS/' => LOGS
         ]
     ];

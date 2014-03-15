@@ -21,6 +21,7 @@ class CacheDsn extends Dsn
             'scheme' => 'className',
         ],
         'replacements' => [
+            'APP_NAME' => APP_NAME,
             '/CACHE/' => CACHE
         ]
     ];

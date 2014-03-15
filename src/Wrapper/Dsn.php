@@ -53,7 +53,9 @@ class Dsn
  *
  * @var array
  */
-    protected $replacements = [];
+    protected $replacements = [
+        'APP_NAME' => APP_NAME
+    ];
 
 /**
  * Read or change the adapter map
