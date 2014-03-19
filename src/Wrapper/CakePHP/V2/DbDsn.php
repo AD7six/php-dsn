@@ -75,5 +75,4 @@ class DbDsn extends Dsn
         $inst = new DbDsn($url, $options);
         return $inst->toArray();
     }
-
 }

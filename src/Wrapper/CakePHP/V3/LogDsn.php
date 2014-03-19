@@ -105,5 +105,4 @@ class LogDsn extends Dsn
 
         return $inst->toArray();
     }
-
 }

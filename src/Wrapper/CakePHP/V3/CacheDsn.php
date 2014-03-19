@@ -115,5 +115,4 @@ class CacheDsn extends Dsn
         $inst = new CacheDsn($url, $options);
         return $inst->toArray();
     }
-
 }

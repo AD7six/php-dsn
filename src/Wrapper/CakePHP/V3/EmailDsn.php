@@ -52,7 +52,7 @@ class EmailDsn extends Dsn
  */
     public function getLayout()
     {
-       $return = $this->dsn->layout;
+        $return = $this->dsn->layout;
 
         if ($return === null) {
             return;
@@ -74,7 +74,7 @@ class EmailDsn extends Dsn
  */
     public function getMessageId()
     {
-       $return = $this->dsn->messageId;
+        $return = $this->dsn->messageId;
 
         if ($return === null) {
             return;
@@ -137,8 +137,8 @@ class EmailDsn extends Dsn
  * @param array $options
  * @return array
  */
-   public static function parse($url, $options = [])
-   {
+    public static function parse($url, $options = [])
+    {
         $inst = new EmailDsn($url, $options);
         return $inst->toArray();
     }

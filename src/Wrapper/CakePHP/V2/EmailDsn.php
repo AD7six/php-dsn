@@ -143,5 +143,4 @@ class EmailDsn extends Dsn
         $inst = new EmailDsn($url, $options);
         return $inst->toArray();
     }
-
 }
