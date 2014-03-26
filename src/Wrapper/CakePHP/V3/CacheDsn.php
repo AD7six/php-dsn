@@ -19,6 +19,8 @@ class CacheDsn extends Dsn
     protected $defaultOptions = [
         'keyMap' => [
             'scheme' => 'className',
+            'host' => 'server',
+            'pass' => 'password',
         ],
         'replacements' => [
             '/CACHE/' => CACHE
