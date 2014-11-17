@@ -46,7 +46,7 @@ class DbDsnTest extends PHPUnit_Framework_TestCase
                     'driver' => 'Cake\Database\Driver\Mysql',
                     'host' => 'localhost',
                     'port' => 3306,
-                    'login' => 'user',
+                    'username' => 'user',
                     'password' => 'password',
                     'database' => 'database_name',
                 ]
@@ -58,7 +58,7 @@ class DbDsnTest extends PHPUnit_Framework_TestCase
                     'driver' => 'Cake\Database\Driver\Mysql',
                     'host' => 'localhost',
                     'port' => 3306,
-                    'login' => 'user',
+                    'username' => 'user',
                     'password' => 'password',
                     'database' => 'test_database_name',
                 ]
