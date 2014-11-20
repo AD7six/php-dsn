@@ -64,6 +64,18 @@ class DbDsn extends Dsn
     }
 
 /**
+ * getPersistent
+ *
+ * Cast the string value in the dsn to a bool
+ *
+ * @return bool
+ */
+    public function getPersistent()
+    {
+        return (bool)$this->dsn->persistent;
+    }
+
+/**
  * parse a url as a database dsn
  *
  * @param string $url

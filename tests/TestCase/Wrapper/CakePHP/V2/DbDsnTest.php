@@ -31,6 +31,42 @@ class DbDsnTest extends PHPUnit_Framework_TestCase
     }
 
 /**
+ * testPersistentCasting
+ *
+ * Persistent need to be a bool otherwise PDO may ignore the value
+ *
+ * @return void
+ */
+    public function testPersistentCasting() {
+        $string = "mysql://root:password@localhost/dbname?persistent=0";
+        $expected = [
+            'datasource' => 'Database/Mysql',
+            'host' => 'localhost',
+            'port' => 3306,
+            'login' => 'root',
+            'password' => 'password',
+            'database' => 'dbname',
+            'persistent' => false
+        ];
+        $result = DbDsn::parse($string);
+        $this->assertSame($expected, $result);
+
+        $string = "mysql://root:password@localhost/dbname?persistent=1";
+        $expected = [
+            'datasource' => 'Database/Mysql',
+            'host' => 'localhost',
+            'port' => 3306,
+            'login' => 'root',
+            'password' => 'password',
+            'database' => 'dbname',
+            'persistent' => true
+        ];
+        $result = DbDsn::parse($string);
+        $this->assertSame($expected, $result);
+
+    }
+
+/**
  * defaultsProvider
  *
  * Returns an array of [string, expectedArray]
