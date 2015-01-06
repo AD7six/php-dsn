@@ -20,7 +20,7 @@ class CacheDsn extends Dsn
         'keyMap' => [
             'scheme' => 'engine',
             'pass' => 'password',
-            'host' => 'server',
+            'host' => 'servers',
         ],
         'replacements' => [
             '/CACHE/' => CACHE
