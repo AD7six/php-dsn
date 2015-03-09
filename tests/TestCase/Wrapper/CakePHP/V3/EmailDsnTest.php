@@ -79,6 +79,21 @@ class EmailDsnTest extends PHPUnit_Framework_TestCase
                     'layout' => false,
                     'timeout' => 30,
                 ]
+            ],
+            [
+                'smtp://user:secret@ssl%3A%2F%2Flocalhost:465/?from=you@localhost&messageId=1&template=0&layout=0&timeout=30',
+                [
+                    'className' => 'Smtp',
+                    'host' => 'ssl://localhost',
+                    'port' => 465,
+                    'username' => 'user',
+                    'password' => 'secret',
+                    'from' => 'you@localhost',
+                    'messageId' => true,
+                    'template' => false,
+                    'layout' => false,
+                    'timeout' => 30,
+                ]
             ]
         ];
     }
