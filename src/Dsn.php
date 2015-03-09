@@ -239,6 +239,18 @@ class Dsn
 
         $url = array_merge($this->uriKeys, $url);
 
+        if (isset($url['host'])) {
+            $url['host'] = urldecode($url['host']);
+        }
+
+        if (isset($url['user'])) {
+            $url['user'] = urldecode($url['user']);
+        }
+
+        if (isset($url['pass'])) {
+            $url['pass'] = urldecode($url['pass']);
+        }
+
         foreach ($url as $key => $val) {
             $setter = 'set' . ucfirst($key);
             $this->$setter($val);
@@ -288,6 +300,18 @@ class Dsn
     protected function toUrlArray($data)
     {
         $url = array_intersect_key($data, $this->uriKeys);
+
+        if (isset($url['host'])) {
+            $url['host'] = urlencode($url['host']);
+        }
+
+        if (isset($url['user'])) {
+            $url['user'] = urlencode($url['user']);
+        }
+
+        if (isset($url['pass'])) {
+            $url['pass'] = urlencode($url['pass']);
+        }
 
         if ($url['adapter']) {
             $return = $url['scheme'] . '+' . $url['adapter'] . '://';
