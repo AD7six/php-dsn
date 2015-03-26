@@ -239,16 +239,12 @@ class Dsn
 
         $url = array_merge($this->uriKeys, $url);
 
-        if (isset($url['host'])) {
-            $url['host'] = urldecode($url['host']);
-        }
+        foreach (['host', 'user', 'pass'] as $key) {
+            if (!isset($url[$key])) {
+                continue;
+            }
 
-        if (isset($url['user'])) {
-            $url['user'] = urldecode($url['user']);
-        }
-
-        if (isset($url['pass'])) {
-            $url['pass'] = urldecode($url['pass']);
+            $url[$key] = urldecode($url[$key]);
         }
 
         foreach ($url as $key => $val) {
@@ -301,16 +297,12 @@ class Dsn
     {
         $url = array_intersect_key($data, $this->uriKeys);
 
-        if (isset($url['host'])) {
-            $url['host'] = urlencode($url['host']);
-        }
+        foreach (['host', 'user', 'pass'] as $key) {
+            if (!isset($url[$key])) {
+                continue;
+            }
 
-        if (isset($url['user'])) {
-            $url['user'] = urlencode($url['user']);
-        }
-
-        if (isset($url['pass'])) {
-            $url['pass'] = urlencode($url['pass']);
+            $url[$key] = urlencode($url[$key]);
         }
 
         if ($url['adapter']) {
