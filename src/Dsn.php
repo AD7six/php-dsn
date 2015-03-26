@@ -339,7 +339,6 @@ class Dsn
         if ($query) {
             foreach ($query as $key => &$value) {
                 if (is_array($value)) {
-
                     $intermediate = [];
                     foreach ($value as $k => $v) {
                         $v = urlencode($v);
