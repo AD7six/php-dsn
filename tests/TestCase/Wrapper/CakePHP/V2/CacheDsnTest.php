@@ -90,7 +90,7 @@ class CacheDsnTest extends PHPUnit_Framework_TestCase
                 'redis://user:password@hostname?prefix=APP_NAME_&duration=DURATION',
                 [
                     'engine' => 'Redis',
-                    'server' => 'hostname',
+                    'servers' => 'hostname',
                     'user' => 'user',
                     'password' => 'password',
                     'prefix' => 'test_app_',
